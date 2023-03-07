@@ -121,8 +121,49 @@ virt-install --virt-type kvm --name bastion --ram 4192 --vcpus=4 \
 ```
 
 2. SSH to the Bastion server
-3. Extract Client tools and copy them to /usr/local/bin 
+3. Download Client and Installer tools  
 ```sh 
 mkdir -p ~/ocp && cd ocp
-
+curl -O https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-4.10/openshift-install-linux.tar.gz
+curl -O https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-4.10/openshift-client-linux.tar.gz
 ```
+4. Extract Client and Installer tools and copy them to /usr/local/bin
+```sh 
+# Client tools
+tar xvf openshift-client-linux.tar.gz
+mv oc kubectl /usr/local/bin
+
+# Installer
+tar xvf openshift-install-linux.tar.gz
+mv openshift-install /usr/local/bin
+```
+5. Confirm Client and Installer tools are working 
+```sh 
+kubectl version
+oc version
+openshift-install version
+```
+6. Update Alma Linux and install required dependencies 
+```sh 
+dnf update
+dnf install -y bind bind-utils dhcp-server httpd haproxy nfs-utils vim jq wget
+```
+7. Download [config files]() for each of the services
+```sh 
+git clone https://github.com/ObieBent/okd-upi-install.git
+```
+8. Configure BIND DNS
+
+Apply configuration 
+```sh
+cp ~/okd-upi-install/dns /etc/named.conf
+cp -R ~/okd-upi-install/dns/zones /etc/named
+```
+  
+Configure the firwall for DNS
+```sh
+firewall-cmd --add-port=53/tcp --permanent
+firewall-cmd --reload
+```
+
+
