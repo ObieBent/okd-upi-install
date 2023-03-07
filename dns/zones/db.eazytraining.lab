@@ -41,5 +41,5 @@ _etcd-server-ssl._tcp.caas.eazytraining.lab.    86400     IN    SRV     0    10 
 _etcd-server-ssl._tcp.caas.eazytraining.lab.    86400     IN    SRV     0    10    2380    etcd-1.lab
 _etcd-server-ssl._tcp.caas.eazytraining.lab.    86400     IN    SRV     0    10    2380    etcd-2.lab
 
-oauth-openshift.apps.caas.eazytraining.lab.     IN     A     192.168.110.9
-console-openshift-console.apps.caas.eazytraining.lab.     IN     A     192.168.110.9
+;oauth-openshift.apps.caas.eazytraining.lab.     IN     A     192.168.110.9
+;console-openshift-console.apps.caas.eazytraining.lab.     IN     A     192.168.110.9
