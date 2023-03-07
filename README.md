@@ -178,6 +178,12 @@ systemctl start named
 systemctl status named
 ```
 
+Confirm dig now sees the correct DNS results by using the DNS server running locally 
+```sh 
+dig eazytraining.lab
+dig -x 192.168.110.9
+```
+
 8. Configure DHCP
 
 Copy the conf file to the correct location for the DHCP service to use 
@@ -279,3 +285,126 @@ systemctl enable --now nfs-server rpcbind
 systemctl start nfs-server rpcbind nfs-mountd
 ```
 
+12. Configure NTP Server 
+Set the NTP server 
+```sh 
+vim /etc/chrony.conf
+
+# comment below line
+# pool 2.almalinux.pool.ntp.org iburst
+
+# add below lines
+# Europe NTP servers
+server 0.europe.pool.ntp.org
+server 1.europe.pool.ntp.org
+server 2.europe.pool.ntp.org
+server 3.europe.pool.ntp.org
+
+# Modify below line 
+# Allow NTP client access from local network 
+allow 192.168.110.0/24
+```
+
+Enable and start the NTP service
+```sh
+systemctl enable --now chronyd
+systemctl start chronyd
+systemctl status chronyd
+```
+
+Verify NTP Server 
+```sh
+chronyc sources
+```
+
+Allow remote access to NTP server
+```sh 
+firewall-cmd --permanent --add-service=ntp
+firewall-cmd --reload
+```
+
+## Generate and host install files 
+1. Generate an SSH key pair
+```sh
+ssh-keygen -t rsa -b 4096 -N "" -f /root/.ssh/id_rsa
+```
+
+2. Create an install directory
+```sh 
+mkdir ~/ocp-install
+```
+
+3. Copy the install-config.yaml included in the clones repository to the install directory
+```sh 
+cp ~/okd-upi-install/manifests/install-config.yaml ~/ocp-install/
+```
+
+4. Update the install-config yaml with your own pull-secret and ssh key.
+  - Line 23 should contain the contents of your pull-secret.txt
+  - Line 24 should contain the contents of your '~/.ssh/id_rsa.pub'
+```sh
+vim ~/ocp-install/install-config.yaml
+```
+
+5. Generate Kubernetes manifest files
+```sh
+openshift-install create manifests --dir ~/ocp-install
+```
+
+> A warning is shown about making the Control Pane nodes schedulable. It is up to you if you want to run workloads on the Control Pane nodes. If you dont want to you can disable this with: sed -i 's/mastersSchedulable: true mastersSchedulable: false/' ~/ocp-install/manifests/cluster-scheduler-02-config.yml. Make any other custom changes you like to the core Kubernetes manifest files.
+
+Generate the Ignition config and Kubernetes auth files 
+```sh
+openshift-install create ignition-configs --dir ~/ocp-install/
+```
+
+6. Create a hosting directory to serve the configuration files for the OpenShift booting process
+```sh
+mkdir -p /var/www/htlm/ocp4
+```
+
+7. Copy all generated install files to the new web server directory 
+```sh 
+cp -R ~/ocp-install/*.ign /var/www/html/ocp4/
+```
+
+8. Move the Fedora Core OS image to the web server directory
+```sh 
+mkdir -p /var/www/html/okd4-image
+wget https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/37.20230205.3.0/x86_64/fedora-coreos-37.20230205.3.0-live-kernel-x86_64 -O /var/www/html/okd4-image/fcos-37-vmlinuz
+wget https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/37.20230205.3.0/x86_64/fedora-coreos-37.20230205.3.0-live-initramfs.x86_64.img -O /var/www/html/okd4-image/fcos-37-initramfs.img
+wget https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/37.20230205.3.0/x86_64/fedora-coreos-37.20230205.3.0-live-rootfs.x86_64.img -O /var/www/html/okd4-image/fcos-37-rootfs.img
+```
+
+9. Create the .treeinfo file which will be used as a helper for installing the OS
+```sh 
+cat <<EOF > /var/www/html/okd4-image/.treeinfo
+[general]
+arch = x86_64
+family = Fedora CoreOS
+platforms = x86_64
+version = 4.12
+[images-x86_64]
+initrd = fcos-37-initramfs.img
+kernel = fcos-37-vmlinuz
+EOF
+```
+
+10. Change ownership and permissions of the web server directory
+```sh
+# OS
+chcon -R -t httpd_sys_content_t /var/www/html/okd4-image
+chown -R apache: /var/www/html/okd4-image
+chmod 744 -R /var/www/html/okd4-image/
+
+# Ignition files
+chcon -R -t httpd_sys_content_t /var/www/html/ocp4/
+chown -R apache: /var/www/html/ocp4/
+chmod 744 -R /var/www/html/ocp4/
+```
+
+11. Confirm you can see all files added to the /var/www/html/ocp4/ and /var/www/htlm/okd4-image/ dirs through Apache
+```sh
+curl localhost:8080/ocp4/
+curl localhost:8080/okd4-image/
+```
