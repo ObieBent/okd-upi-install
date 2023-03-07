@@ -408,3 +408,4 @@ chmod 744 -R /var/www/html/ocp4/
 curl localhost:8080/ocp4/
 curl localhost:8080/okd4-image/
 ```
+
