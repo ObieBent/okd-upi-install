@@ -96,18 +96,7 @@ mkdir -p /var/lib/libvirt/pool/hdd/iso && cd iso
 wget http://mirror.almalinux.ikoula.com/8.7/isos/x86_64/AlmaLinux-8.7-x86_64-minimal.iso
 ```
 
-**OKD VMs**
-|          VM             |  CPU | Memory |     OS            |    IP Address         | Disk (GB) |
-|-------------------------|------|--------|-------------------|-----------------------|-----------|
-|     Bastion             |   4  |    4   |  Alma Linux 8.7   |  192.168.110.9        |     420   |
-|     Master-[1-3]        |   6  |    10  |  Fedora CoreOS 37 |  192.168.110.[111-113]|     60    |
-|     Worker-[1-4]        |   8  |    12  |  Fedora CoreOS 37 |  192.168.110.[114-117]|     60    | 
-|     Bootstrap           |   4  |    8   |  Fedora CoreOS 37 |  192.168.110.9        |     40    |
-
-
-## Configure Environmental Services
-
-1. Create the Bastion node server and install Alma Linux 8.7
+4. Create the Bastion node server and install Alma Linux 8.7
 ```sh 
 qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/hdd/bastion.eazytraining.lab.qcow2 420G
 virt-install --virt-type kvm --name bastion --ram 4192 --vcpus=4 \
@@ -120,14 +109,27 @@ virt-install --virt-type kvm --name bastion --ram 4192 --vcpus=4 \
    --extra-args 'console=ttyS0,115200n8 serial'
 ```
 
-2. SSH to the Bastion server
-3. Download Client and Installer tools  
+## Configure Environmental Services
+
+**OKD VMs**
+|          VM             |  CPU | Memory |     OS            |    IP Address         | Disk (GB) |
+|-------------------------|------|--------|-------------------|-----------------------|-----------|
+|     Bastion             |   4  |    4   |  Alma Linux 8.7   |  192.168.110.9        |     420   |
+|     Master-[1-3]        |   6  |    10  |  Fedora CoreOS 37 |  192.168.110.[111-113]|     60    |
+|     Worker-[1-4]        |   8  |    12  |  Fedora CoreOS 37 |  192.168.110.[114-117]|     60    | 
+|     Bootstrap           |   4  |    8   |  Fedora CoreOS 37 |  192.168.110.9        |     40    |
+
+
+1. SSH to the Bastion server
+
+2. Download Client and Installer tools  
 ```sh 
 mkdir -p ~/ocp && cd ocp
 curl -O https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-4.10/openshift-install-linux.tar.gz
 curl -O https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-4.10/openshift-client-linux.tar.gz
 ```
-4. Extract Client and Installer tools and copy them to /usr/local/bin
+
+3. Extract Client and Installer tools and copy them to /usr/local/bin
 ```sh 
 # Client tools
 tar xvf openshift-client-linux.tar.gz
@@ -137,22 +139,26 @@ mv oc kubectl /usr/local/bin
 tar xvf openshift-install-linux.tar.gz
 mv openshift-install /usr/local/bin
 ```
-5. Confirm Client and Installer tools are working 
+
+4. Confirm Client and Installer tools are working 
 ```sh 
 kubectl version
 oc version
 openshift-install version
 ```
-6. Update Alma Linux and install required dependencies 
+
+5. Update Alma Linux and install required dependencies 
 ```sh 
 dnf update
 dnf install -y bind bind-utils dhcp-server httpd haproxy nfs-utils vim jq wget
 ```
-7. Download [config files]() for each of the services
+
+6. Download [config files]() for each of the services
 ```sh 
 git clone https://github.com/ObieBent/okd-upi-install.git
 ```
-8. Configure BIND DNS
+
+7. Configure BIND DNS
 
 Apply configuration 
 ```sh
