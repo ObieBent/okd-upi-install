@@ -61,7 +61,21 @@ Here is below the exhaustive list:
 
 All the below commands should be performed by using the root account. 
 
-1. Create the **ocpnet** network in KVM
+1. Install the KVM Hypervisor
+
+Install all the dependencies 
+```sh 
+dnf install qemu-kvm libvirt libvirt-python3 jq libguestfs-tools virt-install vim git curl wget firewalld NetworkManager-tui -y
+```
+
+Enable and start the service
+```sh
+systemctl enable libvirtd && systemctl start libvirtd && systemctl status libvirtd
+systemctl enable firewalld && systemctl start firewalld && systemctl status firewalld
+```
+
+
+2. Create the **ocpnet** network in KVM
 ```sh
 mkdir ~/ocp && cd ocp
 cat <<EOF  | tee ocpnet.xml
@@ -86,7 +100,7 @@ virsh net-undefine default
 systemctl restart libvirtd
 ```
 
-4. Configure the network interfaces and the firewall 
+3. Configure the network interfaces and the firewall 
 ```sh
 nmcli connection modify ocpnet connection.zone internal
 nmcli connection modify 'System enp4s0' connection.zone public
@@ -98,13 +112,13 @@ firewall-cmd --list-all --zone=internal
 firewall-cmd --list-all --zone=public
 ```
 
-3. Copy the Alma Linux 8.7 iso to the pool dedicated for the iso images on the host server. <br>
+4. Copy the Alma Linux 8.7 iso to the pool dedicated for the iso images on the host server. <br>
 ```sh
 mkdir -p /var/lib/libvirt/pool/hdd/iso && cd iso
 wget http://mirror.almalinux.ikoula.com/8.7/isos/x86_64/AlmaLinux-8.7-x86_64-minimal.iso
 ```
 
-4. Create the Bastion node server and install Alma Linux 8.7
+5. Create the Bastion node server and install Alma Linux 8.7
 ```sh 
 qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/hdd/bastion.eazytraining.lab.qcow2 420G
 virt-install --virt-type kvm --name bastion --ram 4192 --vcpus=4 \
@@ -412,3 +426,187 @@ curl localhost:8080/ocp4/
 curl localhost:8080/okd4-image/
 ```
 
+## Deploy OpenShift
+
+1. Deploy the bootstrap host and the control plane hosts 
+ 
+**From the KVM Hypervisor**
+
+Clone the repository
+```sh
+git clone https://github.com/ObieBent/okd-upi-install.git
+```
+
+###### Open four terminal
+
+1st terminal
+```sh 
+sh fcos/control-plane/deployBootstrap.sh
+```
+
+2nd terminal
+```sh 
+sh fcos/control-plane/deployMaster01.sh
+```
+
+3rd terminal
+```sh 
+sh fcos/control-plane/deployMaster02.sh
+```
+
+4th terminal
+```sh 
+sh fcos/control-plane/deployMaster03.sh
+```
+
+## Monitor the Bootstrap Process
+**From the Bastion host**
+1. You can monitor the bootstrap process from the ocp-svc host at different log levels (debug, error, info)
+```sh 
+openshift-install --dir ~/ocp-install wait-for bootstrap-complete --log-level=debug
+```
+
+https://github.com/bankierubybank/ocp4-metal-install-lab#remove-the-bootstrap-node
+
+2. Once bootstrapping is complete the ocp-bootstrap node [can be removed](https://github.com/ObieBent/okd-upi-install#remove-the-bootstrap-node)
+
+
+## Remove the Boostrap Node
+1. Remove all references to the ocp-bootstrap host from the /etc/haproxy/haproxy.cfg file 
+```sh 
+# Two entries
+vim /etc/haproxy/haproxy.cfg
+# Restart HAProxy
+systemctl restart haproxy
+```
+
+2. The ocp-bootstrap host can now be safely shutdown and deleted.
+```sh
+sh ~/okd-upi-install/cleanup-bootstrap.sh 
+```
+
+## Wait for installation to complete
+1. Collect the OpenShift Console address and kubeadmin credentials from the output to the install-complete event
+```sh
+openshift-install --dir ~/ocp-install wait-for install-complete --log-level=debug
+```
+2. Continue to join the worker nodes to the cluster in a new tab whilst waiting for the above command to complete
+
+
+## Join Worker Nodes
+
+1. Setup 'oc' and 'kubectl' clients on the ocp-svc machine
+```sh 
+export KUBECONFIG=~/ocp-install/auth/kubeconfig
+# Test auth by viewing cluster nodes
+oc get nodes
+```
+
+2. View and approve pending CSRs 
+```sh
+# View CSRs
+oc get csr
+# Approve all pending CSRs
+oc get csr -o go-template='{{range .items}}{{if not .status}}{{.metadata.name}}{{"\n"}}{{end}}{{end}}' | xargs oc adm certificate approve
+# Wait for kubelet-serving CSRs and approve them too with the same command
+oc get csr -o go-template='{{range .items}}{{if not .status}}{{.metadata.name}}{{"\n"}}{{end}}{{end}}' | xargs oc adm certificate approve
+```
+3. Watch and wait for the Worker Nodes to join the cluster and enter a 'Ready' status
+
+>This can take 5-10 minutes
+```sh
+watch -n5 oc get nodes
+```
+
+## Configure storage for the Image Registry
+1. Create the 'image-registry-storage' PVC by updating the Image Registry operator config by updating the management state to 'Managed' and adding 'pvc' and 'claim' keys in the storage key:
+
+```sh
+oc edit configs.imageregistry.operator.openshift.io
+```
+
+```sh
+managementState: Managed
+```
+
+```sh 
+storage:
+  pvc:
+    claim: # leave the claim blank
+```
+
+2. Confirm the 'image-registry-storage' pvc has been created and is currently in a 'Pending' state
+```sh 
+oc get pvc -n openshift-image-registry
+```
+
+3. Create the persistent volume for the 'image-registry-storage' pvc to bind to
+```sh
+export REGISTRY_PV_NAME=registry-pv
+cat ~/okd-upi-install/manifests/registry-pv.yaml | envsubst | oc create -f -
+```
+
+4. After a short wait the 'image-registry-storage' pvc should now be bound
+```sh
+oc get pvc -n openshift-image-registry
+```
+
+
+## Create the first Admin user
+1. Apply the `oauth-htpasswd.yaml` file to the cluster
+
+```sh
+export HTPASSWD_SECRET_NAME=htpasswd-secret
+export HTPASSWD_SECRET=`htpasswd -n -B -b <username> <password> | base64 -w0`
+cat ~/okd-upi-install/manifests/oauth-htpasswd.yaml | envsubst | oc create -f - 
+```
+
+2. Assign the new user admin permissions
+```sh
+oc adm policy add-cluster-role-user cluster-admin <username>
+```
+
+
+## Access the OpenShift Console
+1. Wait for the 'console' Cluster Operator to become available
+```sh 
+oc get co
+```
+
+2. Append the following to your local workstations /etc/hosts file:
+> From your local workstation If you do not want to add an entry for each new service made available on OpenShift you can configure the ocp-svc DNS server to serve externally and create a wildcard entry for *.apps.caas.eazytraining.lab
+
+```sh
+# Open the hosts file
+sudo vi /etc/hosts
+
+# Append the following entries:
+192.168.110.9 bastion api.caas.eazytraining.lab console-openshift-console.apps.caas.eazytraining.lab oauth-openshift.apps.caas.eazytraining.lab downloads-openshift-console.apps.caas.eazytraining.lab alertmanager-main-openshift-monitoring.apps.caas.eazytraining.lab grafana-openshift-monitoring.apps.caas.eazytraining.lab prometheus-k8s-openshift-monitoring.apps.caas.eazytraining.lab thanos-querier-openshift-monitoring.apps.caas.eazytraining.lab
+```
+
+3. Navigate to the OpenShift Console URL and log in as the 'username' user
+
+>You will get self signed certificate warnings that you can ignore If you need to login as kubeadmin and need to the password again you can retrieve it with: cat ~/ocp-install/auth/kubeadmin-password
+
+
+## Troubleshooting
+1. DHCP troubleshooting 
+```sh
+cat /var/log/messages | grep dhcp
+journalctl -u dhcpd
+```
+
+2. Apache troubleshooting 
+```sh
+cat /var/log/httpd/access_log | grep -iE '*.ign'
+```
+
+3. You can collect logs from all cluster hosts by running the following command from the 'ocp-svc' host: 
+```sh 
+openshift-install gather bootstrap --dir ocp-install --bootstrap=192.168.110.110 --master=192.168.110.111 --master=192.168.110.112 --master=192.168.110.113
+```
+
+
+## Reference 
+i. https://docs.okd.io/4.12/installing/installing_bare_metal/installing-bare-metal.html
+ii. https://docs.okd.io/4.12/installing/installing-troubleshooting.html
