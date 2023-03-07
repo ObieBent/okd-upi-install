@@ -26,6 +26,14 @@ Here is below the exhaustive list:
 
 ![Diagram](diagram/eazytraining-lab.png)
 
+**OKD VMs**
+|          VM             |  CPU | Memory |     OS            |    IP Address         | Disk (GB) |
+|-------------------------|------|--------|-------------------|-----------------------|-----------|
+|     Bastion             |   4  |    4   |  Alma Linux 8.7   |  192.168.110.9        |     420   |
+|     Master-[1-3]        |   6  |    10  |  Fedora CoreOS 37 |  192.168.110.[111-113]|     60    |
+|     Worker-[1-4]        |   8  |    12  |  Fedora CoreOS 37 |  192.168.110.[114-117]|     60    | 
+|     Bootstrap           |   4  |    8   |  Fedora CoreOS 37 |  192.168.110.9        |     40    |
+
 
 ## Download Software
 ***
@@ -110,15 +118,6 @@ virt-install --virt-type kvm --name bastion --ram 4192 --vcpus=4 \
 ```
 
 ## Configure Environmental Services
-
-**OKD VMs**
-|          VM             |  CPU | Memory |     OS            |    IP Address         | Disk (GB) |
-|-------------------------|------|--------|-------------------|-----------------------|-----------|
-|     Bastion             |   4  |    4   |  Alma Linux 8.7   |  192.168.110.9        |     420   |
-|     Master-[1-3]        |   6  |    10  |  Fedora CoreOS 37 |  192.168.110.[111-113]|     60    |
-|     Worker-[1-4]        |   8  |    12  |  Fedora CoreOS 37 |  192.168.110.[114-117]|     60    | 
-|     Bootstrap           |   4  |    8   |  Fedora CoreOS 37 |  192.168.110.9        |     40    |
-
 
 1. SSH to the Bastion server
 
