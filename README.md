@@ -152,7 +152,7 @@ dnf update
 dnf install -y bind bind-utils dhcp-server httpd haproxy nfs-utils vim jq wget
 ```
 
-6. Download [config files]() for each of the services
+6. Download [config files](https://github.com/ObieBent/okd-upi-install.git) for each of the services
 ```sh 
 git clone https://github.com/ObieBent/okd-upi-install.git
 ```
