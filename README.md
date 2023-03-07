@@ -351,7 +351,10 @@ vim ~/ocp-install/install-config.yaml
 openshift-install create manifests --dir ~/ocp-install
 ```
 
-> A warning is shown about making the Control Pane nodes schedulable. It is up to you if you want to run workloads on the Control Pane nodes. If you dont want to you can disable this with: sed -i 's/mastersSchedulable: true mastersSchedulable: false/' ~/ocp-install/manifests/cluster-scheduler-02-config.yml. Make any other custom changes you like to the core Kubernetes manifest files.
+>Above warning message says that master nodes are schedulable, it means we can have workload on control planes (control planes will also work as worker nodes). If you wish to disable this then run following sed command,
+```sh
+sed -i 's/mastersSchedulable: true/mastersSchedulable: false/' ~/ocp-install/manifests/cluster-scheduler-02-config.yml
+```
 
 Generate the Ignition config and Kubernetes auth files 
 ```sh
