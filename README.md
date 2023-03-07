@@ -149,10 +149,10 @@ openshift-install version
 5. Update Alma Linux and install required dependencies 
 ```sh 
 dnf update
-dnf install -y bind bind-utils dhcp-server httpd haproxy nfs-utils vim jq wget
+dnf install -y bind bind-utils dhcp-server httpd haproxy nfs-utils chrony vim jq wget
 ```
 
-6. Download [config files](https://github.com/ObieBent/okd-upi-install.git) for each of the services
+6. Download [config files](https://github.com/ObieBent/okd-upi-install) for each of the services
 ```sh 
 git clone https://github.com/ObieBent/okd-upi-install.git
 ```
@@ -171,4 +171,111 @@ firewall-cmd --add-port=53/tcp --permanent
 firewall-cmd --reload
 ```
 
+Enable and start the service 
+```sh 
+systemctl enable --now named
+systemctl start named 
+systemctl status named
+```
+
+8. Configure DHCP
+
+Copy the conf file to the correct location for the DHCP service to use 
+```sh
+cp ~/okd-upi-install/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf
+```
+
+Configure the firewall 
+```sh 
+firewall-cmd --add-service=dhcp --permanent 
+firewall-cmd --reload
+```
+
+Enable and start the service 
+```sh 
+systemctl enable --now dhcpd
+systemctl start dhcpd 
+systemctl status dhcpd
+```
+
+9. Configure the Apache Web Server 
+
+Change default listen port to 8080 in httpd.conf
+```sh
+sed -i 's/Listen 80/Listen 0.0.0.0:8080/' /etc/httpd/conf/httpd.conf
+```
+
+Configure the firewall for Web Server traffic 
+```sh
+firewall-cmd --add-port=8080/tcp --permanent
+firewall-cmd --reload
+```
+
+Enable and start the service 
+```sh 
+systemctl enable --now httpd
+systemctl start httpd 
+systemctl status httpd
+```
+
+Making a GET request to localhost on port 8080 should now return the default Apache webpage
+```sh 
+curl localhost:8080
+```
+
+10. Configure HAProxy 
+
+Copy HAProxy config 
+```sh
+cp ~/okd-upi-install/haproxy/haproxy.conf /etc/haproxy/haproxy.conf
+```
+
+Configure the firewall 
+```sh
+firewall-cmd --add-port=9000/tcp
+firewall-cmd --add-port=6443/tcp --zone=public --permanent # kube-api-server on control plane nodes
+firewall-cmd --add-port=22623/tcp --zone=public --permanent # machine-config server
+firewall-cmd --add-service=http --zone=public --permanent # web services hosted on worker nodes
+firewall-cmd --add-service=https --zone=public --permanent # web services hosted on worker nodes
+```
+
+Enable and start the service 
+```sh 
+setsebool -P haproxy_connect_any 1 # SELinux name_bind access
+systemctl enable --now haproxy
+systemctl start httpd 
+systemctl status httpd
+```
+
+11. Configure NFS for the OpenShift registry. It is a requirement to provide storage to the Registry, empyDir can be specified if necessary. 
+
+Create the Share 
+
+Check available disk and its location `df -h`
+
+```sh
+mkdir -p /shares/{registry,data}
+chown -R nobody:nobody /shares/
+chmod -R 777 /shares/
+```
+
+Export the Share 
+```sh 
+echo "/shares 192.168.110.0/24(rw,sync,root_squash,no_subtree_check,no_wdelay)" > /etc/exports
+exportfs -rv
+```
+
+Set firewall rules 
+```sh 
+firewall-cmd --zone=public --add-service mountd --permanent
+firewall-cmd --zone=public --add-service rpc-bind --permanent
+firewall-cmd --zone=public --add-service nfs --permanent
+firewall-cmd --reload
+```
+
+Enable and start the NFS related services 
+```sh
+systemctl enable --now nfs-server rpcbind
+systemctl start nfs-server rpcbind nfs-mountd
+```
 
