@@ -100,8 +100,8 @@ wget http://mirror.almalinux.ikoula.com/8.7/isos/x86_64/AlmaLinux-8.7-x86_64-min
 |          VM             |  CPU | Memory |     OS            |    IP Address         | Disk (GB) |
 |-------------------------|------|--------|-------------------|-----------------------|-----------|
 |     Bastion             |   4  |    4   |  Alma Linux 8.7   |  192.168.110.9        |     420   |
-|     Master-#            |   6  |    10  |  Fedora CoreOS 37 |  192.168.110.[111-113]|     60    |
-|     Worker-#            |   8  |    12  |  Fedora CoreOS 37 |  192.168.110.[114-117]|     60    | 
+|     Master-[1-3]        |   6  |    10  |  Fedora CoreOS 37 |  192.168.110.[111-113]|     60    |
+|     Worker-[1-4]        |   8  |    12  |  Fedora CoreOS 37 |  192.168.110.[114-117]|     60    | 
 |     Bootstrap           |   4  |    8   |  Fedora CoreOS 37 |  192.168.110.9        |     40    |
 
 
