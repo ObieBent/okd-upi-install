@@ -1,12 +1,11 @@
 # okd-upi-install
 
-This repository provides the configurations in order to install OKD or Red Hat OpenShift through KVM (libvirt).
+This repository provides the configurations in order to install OKD through KVM (libvirt).
 
-The folder **fcos** contain the scripts for installing OKD (Fedora CoreOS). 
 
 ### Prerequisites - Variables
 
-In order to perform Day2 specific actions regarding authentication, persistent storage for the internal image register, it will therefore be necessary to inject environment variables. It's best to reference all the variables so you don't forget anything.
+In order to perform Day2 specific actions regarding authentication and persistent storage for the internal image register, it will therefore be necessary to inject environment variables. It's best to reference all the variables so you don't forget anything.
 
 Here is below the exhaustive list: 
 
@@ -142,7 +141,7 @@ curl -O https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-4.10/op
 curl -O https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-4.10/openshift-client-linux.tar.gz
 ```
 
-3. Extract Client and Installer tools and copy them to /usr/local/bin
+3. Extract Client and Installer tools and move them to /usr/local/bin
 ```sh 
 # Client tools
 tar xvf openshift-client-linux.tar.gz
