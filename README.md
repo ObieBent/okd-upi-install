@@ -32,7 +32,7 @@ Here is below the exhaustive list:
 |     Bastion             |   4  |    4   |  Alma Linux 8.7   |  192.168.110.9        |     420   |
 |     Master-[1-3]        |   6  |    10  |  Fedora CoreOS 37 |  192.168.110.[111-113]|     60    |
 |     Worker-[1-4]        |   8  |    12  |  Fedora CoreOS 37 |  192.168.110.[114-117]|     60    | 
-|     Bootstrap           |   4  |    8   |  Fedora CoreOS 37 |  192.168.110.9        |     40    |
+|     Bootstrap           |   4  |    8   |  Fedora CoreOS 37 |  192.168.110.110      |     40    |
 
 
 ## Download Software
