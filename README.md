@@ -111,7 +111,7 @@ firewall-cmd --list-all --zone=internal
 firewall-cmd --list-all --zone=public
 ```
 
-4. Copy the Alma Linux 8.7 iso to the pool dedicated for the iso images on the host server. <br>
+4. Download the Alma Linux 8.7 iso image to the dedicated pool on the host server. <br>
 ```sh
 mkdir -p /var/lib/libvirt/pool/hdd/iso && cd iso
 wget http://mirror.almalinux.ikoula.com/8.7/isos/x86_64/AlmaLinux-8.7-x86_64-minimal.iso
@@ -464,8 +464,6 @@ sh fcos/control-plane/deployMaster03.sh
 ```sh 
 openshift-install --dir ~/ocp-install wait-for bootstrap-complete --log-level=debug
 ```
-
-https://github.com/bankierubybank/ocp4-metal-install-lab#remove-the-bootstrap-node
 
 2. Once bootstrapping is complete the ocp-bootstrap node [can be removed](https://github.com/ObieBent/okd-upi-install#remove-the-bootstrap-node)
 
