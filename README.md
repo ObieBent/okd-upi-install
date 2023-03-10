@@ -51,7 +51,7 @@ Here is below the exhaustive list:
 7. Download the Pull Secret
 
 
-## Prepare the environment for installing OKD 4.12
+## Prepare the environment for installing OKD 4.10
 **In KVM Hypervisor**
 
 All the below commands should be performed by using the root account. 
