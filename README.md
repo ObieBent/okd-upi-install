@@ -555,12 +555,12 @@ oc get pvc -n openshift-image-registry
 ```sh
 export HTPASSWD_SECRET_NAME=htpasswd-secret
 export HTPASSWD_SECRET=`htpasswd -n -B -b <username> <password> | base64 -w0`
-cat ~/okd-upi-install/manifests/oauth-htpasswd.yaml | envsubst | oc create -f - 
+cat ~/okd-upi-install/manifests/oauth-htpasswd.yaml | envsubst | oc replace -f - 
 ```
 
 2. Assign the new user admin permissions
 ```sh
-oc adm policy add-cluster-role-user cluster-admin <username>
+oc adm policy add-cluster-role-to-user cluster-admin <username>
 ```
 
 
