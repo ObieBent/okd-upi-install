@@ -512,6 +512,117 @@ watch -n5 oc get nodes
 ```
 
 ## Configure storage for the Image Registry
+1. Clone the CSI driver required in order to consume NFS volume
+
+```sh 
+mkdir ~/ocp/nfs -p && cd ~/ocp/nfs
+git clone https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner.git k8s-csi-nfs 
+cd k8s-csi-nfs 
+```
+
+2. Create namespace for NFS Storage provisioner
+```sh
+oc create namespace openshift-nfs-storage
+```
+
+3. Add monitoring label to namespace
+```sh 
+oc label namespace openshift-nfs-storage "openshift.io/cluster-monitoring=true"
+```
+
+4. Configure deployment and RBAC for NFS
+Switch project 
+```sh
+oc project openshift-nfs-storage
+```
+
+Change namespace on deployment and rbac YAML file
+```sh
+NAMESPACE=`oc project -q`
+
+sed -i'' "s/namespace:.*/namespace: $NAMESPACE/g" ./deploy/rbac.yaml 
+sed -i'' "s/namespace:.*/namespace: $NAMESPACE/g" ./deploy/deployment.yaml
+```
+
+Create RBAC
+```sh
+oc create -f deploy/rbac.yaml
+oc adm policy add-scc-to-user hostmount-anyuid system:serviceaccount:$NAMESPACE:nfs-client-provisioner
+```
+
+Configure deployment
+```sh
+vim ~/ocp/nfs/k8s-csi-nfs/deploy/deployment.yaml
+```
+
+```yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfs-client-provisioner
+  labels:
+    app: nfs-client-provisioner
+  # replace with namespace where provisioner is deployed
+  namespace: openshift-nfs-storage
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: nfs-client-provisioner
+  template:
+    metadata:
+      labels:
+        app: nfs-client-provisioner
+    spec:
+      serviceAccountName: nfs-client-provisioner
+      containers:
+        - name: nfs-client-provisioner
+          image: quay.io/external_storage/nfs-client-provisioner:latest
+          volumeMounts:
+            - name: nfs-client-root
+              mountPath: /persistentvolumes
+          env:
+            - name: PROVISIONER_NAME
+              value: storage.io/nfs
+            - name: NFS_SERVER
+              value: 10.10.51.9           # Change this
+            - name: NFS_PATH
+              value: /mnt/nfs_shares/okd  # Change this
+      volumes:
+        - name: nfs-client-root
+          nfs:
+            server: 10.10.51.9            # Change this
+            path: /mnt/nfs_shares/okd     # Change this
+```
+
+Configure storageclass
+```sh
+vim ~/ocp/nfs/k8s-csi-nfs/deploy/class.yaml
+```
+
+```yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: managed-nfs-storage
+provisioner: storage.io/nfs # or choose another name, must match deployment's env PROVISIONER_NAME'
+parameters:
+  archiveOnDelete: "false"
+```
+
+Deploy Deployment and StorageClass
+```sh
+oc create -f ~/ocp/nfs/k8s-csi-nfs/deploy/class.yaml 
+oc create -f ~/ocp/nfs/k8s-csi-nfs/deploy/deployment.yaml
+```
+
+Verify deployment
+```sh
+oc get pods -n openshift-nfs-storage
+```
+
 1. Create the 'image-registry-storage' PVC by updating the Image Registry operator config by updating the management state to 'Managed' and adding 'pvc' and 'claim' keys in the storage key:
 
 ```sh
