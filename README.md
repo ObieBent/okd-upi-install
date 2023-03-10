@@ -587,14 +587,14 @@ spec:
             - name: PROVISIONER_NAME
               value: storage.io/nfs
             - name: NFS_SERVER
-              value: 10.10.51.9           # Change this
+              value: 10.10.51.9           # Change this (NFS IP Server )
             - name: NFS_PATH
-              value: /mnt/nfs_shares/okd  # Change this
+              value: /mnt/nfs_shares/okd  # Change this (NFS mount path)
       volumes:
         - name: nfs-client-root
           nfs:
-            server: 10.10.51.9            # Change this
-            path: /mnt/nfs_shares/okd     # Change this
+            server: 10.10.51.9            # Change this (NFS IP Server)
+            path: /mnt/nfs_shares/okd     # Change this (NFS mount path)
 ```
 
 Configure storageclass
