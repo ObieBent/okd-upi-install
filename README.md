@@ -512,7 +512,7 @@ watch -n5 oc get nodes
 ```
 
 ## Configure storage for the Image Registry
-1. Clone the CSI driver required in order to consume NFS volume
+1. Clone the CSI driver repository required in order to consume NFS volumes
 
 ```sh 
 mkdir ~/ocp/nfs -p && cd ~/ocp/nfs
@@ -530,7 +530,8 @@ oc create namespace openshift-nfs-storage
 oc label namespace openshift-nfs-storage "openshift.io/cluster-monitoring=true"
 ```
 
-4. Configure deployment and RBAC for NFS
+4. Configure deployment and RBAC for NFS <br>
+
 Switch project 
 ```sh
 oc project openshift-nfs-storage
