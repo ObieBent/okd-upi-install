@@ -277,6 +277,7 @@ Create the Share
 Check available disk and its location `df -h`
 
 ```sh
+dnf install nfs-utils -y
 mkdir -p /shares/{registry,data}
 chown -R nobody:nobody /shares/
 chmod -R 777 /shares/
