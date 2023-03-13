@@ -111,7 +111,7 @@ firewall-cmd --list-all --zone=public
 
 4. Download the Alma Linux 8.7 iso image to the dedicated pool on the host server. <br>
 ```sh
-mkdir -p /var/lib/libvirt/pool/sdd/iso && cd /var/lib/libvirt/pool/sdd/iso
+mkdir -p /var/lib/libvirt/pool/ssd/iso && cd /var/lib/libvirt/pool/sdd/iso
 wget http://mirror.almalinux.ikoula.com/8.7/isos/x86_64/AlmaLinux-8.7-x86_64-minimal.iso
 ```
 
@@ -122,7 +122,7 @@ qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/sdd/bas
 
 ```sh
 virt-install --virt-type kvm --name bastion --ram 4192 --vcpus=4 \
-   --disk /var/lib/libvirt/pool/sdd/bastion.eazytraining.lab.qcow2,format=qcow2 \
+   --disk /var/lib/libvirt/pool/ssd/bastion.eazytraining.lab.qcow2,format=qcow2 \
    --network network=ocpnet \
    --os-type=linux --os-variant=almalinux8 \
    --location=/var/lib/libvirt/pool/sdd/iso/AlmaLinux-8.7-x86_64-minimal.iso \
