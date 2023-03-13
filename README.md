@@ -119,7 +119,7 @@ wget http://mirror.almalinux.ikoula.com/8.7/isos/x86_64/AlmaLinux-8.7-x86_64-min
 ```sh 
 qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/hdd/bastion.eazytraining.lab.qcow2 420G
 virt-install --virt-type kvm --name bastion --ram 4192 --vcpus=4 \
-   --disk /var/lib/libvirt/pool/hdd/bastion.eazytraining.lab.qcow2,format=qcow2 \
+   --disk /var/lib/libvirt/pool/sdd/bastion.eazytraining.lab.qcow2,format=qcow2 \
    --network network=ocpnet \
    --os-type=linux --os-variant=almalinux8 \
    --location=/var/lib/libvirt/pool/hdd/iso/AlmaLinux-8.7-x86_64-minimal.iso \
