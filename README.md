@@ -111,7 +111,7 @@ firewall-cmd --list-all --zone=public
 
 4. Download the Alma Linux 8.7 iso image to the dedicated pool on the host server. <br>
 ```sh
-mkdir -p /var/lib/libvirt/pool/hdd/iso && cd iso
+mkdir -p /var/lib/libvirt/pool/sdd/iso && cd /var/lib/libvirt/pool/sdd/iso
 wget http://mirror.almalinux.ikoula.com/8.7/isos/x86_64/AlmaLinux-8.7-x86_64-minimal.iso
 ```
 

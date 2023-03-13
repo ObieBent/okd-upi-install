@@ -14,7 +14,7 @@ sleep 15
  --ram=8192 \
  --os-variant=fedora-coreos-stable \
  --vcpus=4 \
- --disk /var/lib/libvirt/pool/hdd/ocp-bootstrap.caas.eazytraining.lab.qcow2 --boot hd,menu=on\
+ --disk /var/lib/libvirt/pool/sdd/ocp-bootstrap.caas.eazytraining.lab.qcow2 --boot hd,menu=on\
  --nographics \
  --location=http://192.168.110.9:8080/okd4-image/ \
  --extra-args "rd.neednet=1 console=tty0 console=ttyS0,115200n8 coreos.inst=yes coreos.inst.install_dev=/dev/vda \
