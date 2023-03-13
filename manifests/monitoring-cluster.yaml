@@ -36,4 +36,4 @@ data:
         node-role.kubernetes.io/infra:
     thanosQuerier:
       nodeSelector:
-        node-role.kubernetes.io/infra
+        node-role.kubernetes.io/infra:
