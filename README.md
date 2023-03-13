@@ -155,7 +155,7 @@ mv openshift-install /usr/local/bin
 
 4. Confirm Client and Installer tools are working 
 ```sh 
-kubectl version
+kubectl version --client --short
 oc version
 openshift-install version
 ```
