@@ -443,6 +443,10 @@ git clone https://github.com/ObieBent/okd-upi-install.git
 
 ###### Open four terminal
 
+```sh
+cd okd-upi-install
+```
+
 1st terminal
 ```sh 
 sh fcos/control-plane/deployBootstrap.sh
