@@ -386,7 +386,7 @@ mkdir -p /var/www/htlm/ocp4
 
 7. Copy all generated install files to the new web server directory 
 ```sh 
-cp -R ~/ocp-install/*.ign /var/www/html/ocp4/
+cp -R ~/ocp-install/*.ign /var/www/htlm/ocp4/
 ```
 
 8. Move the Fedora Core OS image to the web server directory
