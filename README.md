@@ -163,7 +163,7 @@ openshift-install version
 5. Update Alma Linux and install required dependencies 
 ```sh 
 dnf update
-dnf install -y bind bind-utils dhcp-server httpd haproxy nfs-utils chrony vim jq wget
+dnf install -y bind bind-utils dhcp-server httpd haproxy nfs-utils chrony vim jq wget git
 ```
 
 6. Download [config files](https://github.com/ObieBent/okd-upi-install) for each of the services
