@@ -195,9 +195,11 @@ systemctl status named
 
 Confirm dig now sees the correct DNS results by using the DNS server running locally 
 ```sh 
-dig eazytraining.lab
-dig -x 192.168.110.9
+dig eazytraining.lab @192.168.110.9
+dig -x 192.168.110.9 @192.168.110.9
 ```
+
+Change the nameserver configured in the `/etc/resol.conf` by 127.0.0.1
 
 8. Configure DHCP
 
