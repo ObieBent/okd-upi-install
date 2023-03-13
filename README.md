@@ -9,9 +9,11 @@ In order to perform Day2 specific actions regarding authentication and persisten
 
 Here is below the exhaustive list: 
 
+- `CLUSTER_NAME`: name of the cluster [caas]
 - `HTPASSWD_SECRET`: htpasswd secret [base64]
 - `HTPASSWD_SECRET_NAME`: name of the secret
 - `REGISTRY_PV_NAME`: name of the persistent volume 
+- `NFS_MONITORING_SIZE`: size of the storage used by the monitoring stack [XXGi]
 
 
 # OpenShift 4 Install - User Provisioned Infrastructure (UPI)
@@ -710,47 +712,6 @@ cat ~/okd-upi-install/manifests/oauth-htpasswd.yaml | envsubst | oc apply -f -
 oc adm policy add-cluster-role-to-user cluster-admin <username>
 ```
 
-### Authentication operator
-Patch the authentication operator
-
-```sh
-oc patch authentications.operator.openshift.io cluster -p='{"spec": {"unsupportedConfigOverrides": {"useUnsupportedUnsafeNonHANonProductionUnstableOAuthServer": true }}}' --type=merge
-```
-
-Removing of the Self-Provisioner 
-```sh
-oc patch clusterrolebinding.rbac self-provisioners -p '{"subjects": null}'
-```
-
-### ETCD Encryption 
-```sh 
-oc edit apiserver
-```
-
-```sh 
-spec:
-  encryption:
-    type: aescbc
-```
-
-Check the encryption process 
-```sh 
-oc get openshiftapiserver -o=jsonpath='{range .items[0].status.conditions[?(@.type=="Encrypted")]}{.reason}{"\n"}{.message}{"\n"}'
-```
-
-```sh 
-get kubeapiserver -o=jsonpath='{range .items[0].status.conditions[?(@.type=="Encrypted")]}{.reason}{"\n"}{.message}{"\n"}'
-```
-
-Get the encryption key for openshift-apiserver
-```sh 
-echo $(oc get secrets/encryption-config -n openshift-apiserver -o=jsonpath='{.data.encryption-config}') | base64 -d | jq .
-```
-
-Get encryption key For openshift-kube-apiserver:
-```sh
- echo $(oc get secrets/encryption-config -n openshift-kube-apiserver -o=jsonpath='{.data.encryption-config}') | base64 -d | jq .
-```
 
 ### Infra Nodes Configuration 
 1. Adding the label `node-role.kubernetes.io/infra`
@@ -781,7 +742,7 @@ spec:
 EOF
 ```
 
-3. Apply the machine config pool
+3. Apply the machine config pool configuration
 ```sh
 oc apply -f ~/ocp/infra-nodes/mcp.yaml
 ```
@@ -800,9 +761,9 @@ oc edit ingresscontrollers.operator.openshift.io -n openshift-ingress-operator
 ```sh 
 spec: 
   nodePlacement:
-      nodeSelector:
-        matchLabels:
-          node-role.kubernetes.io/infra: ""
+    nodeSelector:
+      matchLabels:
+        node-role.kubernetes.io/infra: ""
 ```
 
 Verify if ingress controller pods are running on infra nodes 
@@ -818,7 +779,7 @@ oc edit configs.imageregistry.operator.openshift.io
 ```sh
 spec:
  nodeSelector:
-    node-role.kubernetes.io/infra: ""
+   node-role.kubernetes.io/infra: ""
 ```
 
 Verify if image registry pods are running on infra nodes
@@ -846,6 +807,66 @@ ssh core@ocp-worker-03.caas.eazytraining.lab -t 'sudo reboot'
 oc  label node ocp-worker-01.caas.eazytraining.lab node-role.kubernetes.io/worker-
 oc  label node ocp-worker-02.caas.eazytraining.lab node-role.kubernetes.io/worker-
 oc  label node ocp-worker-03.caas.eazytraining.lab node-role.kubernetes.io/worker-
+```
+
+### Monitoring
+1. Define the scheduling of the monitoring stack pods on Infra Nodes at the cluster level and the required size on the storage
+
+```sh 
+export CLUSTER_NAME=caas
+export NFS_MONITORING_SIZE=20Gi
+cat ~/okd-upi-install/manifests/monitoring-cluster.yaml | envsubst | oc apply -f - 
+```
+
+2. Enable monitoring for user-defined projects on Infra Nodes
+```sh 
+oc apply -f ~/okd-upi-install/manifests/monitoring-user.yaml
+```
+
+
+### Authentication operator
+Patch the authentication operator
+
+```sh
+oc patch authentications.operator.openshift.io cluster -p='{"spec": {"unsupportedConfigOverrides": {"useUnsupportedUnsafeNonHANonProductionUnstableOAuthServer": true }}}' --type=merge
+```
+
+Removing of the Self-Provisioner 
+```sh
+oc patch clusterrolebinding.rbac self-provisioners -p '{"subjects": null}'
+```
+
+
+### ETCD Encryption 
+```sh 
+oc edit apiserver
+```
+
+Add these lines
+
+```sh 
+spec:
+  encryption:
+    type: aescbc
+```
+
+Check the encryption process 
+```sh 
+oc get openshiftapiserver -o=jsonpath='{range .items[0].status.conditions[?(@.type=="Encrypted")]}{.reason}{"\n"}{.message}{"\n"}'
+```
+
+```sh 
+oc get kubeapiserver -o=jsonpath='{range .items[0].status.conditions[?(@.type=="Encrypted")]}{.reason}{"\n"}{.message}{"\n"}'
+```
+
+Get the encryption key for openshift-apiserver
+```sh 
+echo $(oc get secrets/encryption-config -n openshift-apiserver -o=jsonpath='{.data.encryption-config}') | base64 -d | jq .
+```
+
+Get encryption key for openshift-kube-apiserver:
+```sh
+ echo $(oc get secrets/encryption-config -n openshift-kube-apiserver -o=jsonpath='{.data.encryption-config}') | base64 -d | jq .
 ```
 
 
