@@ -662,20 +662,14 @@ oc get pvc -n openshift-image-registry
 oc patch storageclass nfs-sc -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
 ```
 
-
-## Create the first Admin user
-1. Apply the `oauth-htpasswd.yaml` file to the cluster
-
+6. Check clusteroperator status. Wait until Availability become True.
 ```sh
-export HTPASSWD_SECRET_NAME=htpasswd-secret
-export HTPASSWD_SECRET=`htpasswd -n -B -b <username> <password> | base64 -w0`
-cat ~/okd-upi-install/manifests/oauth-htpasswd.yaml | envsubst | oc apply -f - 
+oc get clusteroperator image-registry
 ```
 
-2. Assign the new user admin permissions
-```sh
-oc adm policy add-cluster-role-to-user cluster-admin <username>
-```
+
+
+
 
 
 ## Access the OpenShift Console
@@ -698,6 +692,161 @@ sudo vi /etc/hosts
 3. Navigate to the OpenShift Console URL and log in as the 'username' user
 
 >You will get self signed certificate warnings that you can ignore If you need to login as kubeadmin and need to the password again you can retrieve it with: cat ~/ocp-install/auth/kubeadmin-password
+
+
+## Day 2 Gestures
+
+### Create the first Admin user
+1. Apply the `oauth-htpasswd.yaml` file to the cluster
+
+```sh
+export HTPASSWD_SECRET_NAME=htpasswd-secret
+export HTPASSWD_SECRET=`htpasswd -n -B -b <username> <password> | base64 -w0`
+cat ~/okd-upi-install/manifests/oauth-htpasswd.yaml | envsubst | oc apply -f - 
+```
+
+2. Assign the new user admin permissions
+```sh
+oc adm policy add-cluster-role-to-user cluster-admin <username>
+```
+
+### Authentication operator
+Patch the authentication operator
+
+```sh
+oc patch authentications.operator.openshift.io cluster -p='{"spec": {"unsupportedConfigOverrides": {"useUnsupportedUnsafeNonHANonProductionUnstableOAuthServer": true }}}' --type=merge
+```
+
+Removing of the Self-Provisioner 
+```sh
+oc patch clusterrolebinding.rbac self-provisioners -p '{"subjects": null}'
+```
+
+### ETCD Encryption 
+```sh 
+oc edit apiserver
+```
+
+```sh 
+spec:
+  encryption:
+    type: aescbc
+```
+
+Check the encryption process 
+```sh 
+oc get openshiftapiserver -o=jsonpath='{range .items[0].status.conditions[?(@.type=="Encrypted")]}{.reason}{"\n"}{.message}{"\n"}'
+```
+
+```sh 
+get kubeapiserver -o=jsonpath='{range .items[0].status.conditions[?(@.type=="Encrypted")]}{.reason}{"\n"}{.message}{"\n"}'
+```
+
+Get the encryption key for openshift-apiserver
+```sh 
+echo $(oc get secrets/encryption-config -n openshift-apiserver -o=jsonpath='{.data.encryption-config}') | base64 -d | jq .
+```
+
+Get encryption key For openshift-kube-apiserver:
+```sh
+ echo $(oc get secrets/encryption-config -n openshift-kube-apiserver -o=jsonpath='{.data.encryption-config}') | base64 -d | jq .
+```
+
+### Infra Nodes Configuration 
+1. Adding the label `node-role.kubernetes.io/infra`
+```sh 
+oc  label node ocp-worker-01.caas.eazytraining.lab node-role.kubernetes.io/infra=
+oc  label node ocp-worker-02.caas.eazytraining.lab node-role.kubernetes.io/infra=
+oc  label node ocp-worker-03.caas.eazytraining.lab node-role.kubernetes.io/infra=
+```
+
+2. Define the machine config pool configuration 
+```sh
+mkdir ~/ocp/infra-nodes 
+```
+
+```sh
+cat <<EOF | sudo tee  ~/ocp/infra-nodes/mcp.yaml
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfigPool
+metadata:
+  name: infra
+spec:
+  machineConfigSelector:
+    matchExpressions:
+      - {key: machineconfiguration.openshift.io/role, operator: In, values: [worker,infra]}
+  nodeSelector:
+    matchLabels:
+      node-role.kubernetes.io/infra: ""
+EOF
+```
+
+3. Apply the machine config pool
+```sh
+oc apply -f ~/ocp/infra-nodes/mcp.yaml
+```
+
+4. Check if it is well applied to the nodes specified in step 1 
+
+```sh
+watch -n2 oc get mcp
+```
+
+5. Schedule the ingress controller pods on infra nodes 
+```sh 
+oc edit ingresscontrollers.operator.openshift.io -n openshift-ingress-operator
+```
+
+```sh 
+spec: 
+  nodePlacement:
+      nodeSelector:
+        matchLabels:
+          node-role.kubernetes.io/infra: ""
+```
+
+Verify if ingress controller pods are running on infra nodes 
+```sh 
+oc get pod -n openshift-ingress -o wide
+```
+
+6. Schedule the image registry pods on infra nodes
+```sh
+oc edit configs.imageregistry.operator.openshift.io
+```
+
+```sh
+spec:
+ nodeSelector:
+    node-role.kubernetes.io/infra: ""
+```
+
+Verify if image registry pods are running on infra nodes
+```sh 
+oc get po -n openshift-image-registry  -owide
+```
+
+7. Define taints on infra node to prevent the scheduling of application workloads
+
+```sh
+oc adm taint node  ocp-worker-01.caas.eazytraining.lab node-function=infra:NoSchedule
+oc adm taint node  ocp-worker-02.caas.eazytraining.lab node-function=infra:NoSchedule
+oc adm taint node  ocp-worker-03.caas.eazytraining.lab node-function=infra:NoSchedule
+```
+
+Reboot nodes
+```sh 
+ssh core@ocp-worker-01.caas.eazytraining.lab -t 'sudo reboot'
+ssh core@ocp-worker-02.caas.eazytraining.lab -t 'sudo reboot'
+ssh core@ocp-worker-03.caas.eazytraining.lab -t 'sudo reboot'
+```
+
+8. Remove label node-role.kubernetes.io/worker
+```sh
+oc  label node ocp-worker-01.caas.eazytraining.lab node-role.kubernetes.io/worker-
+oc  label node ocp-worker-02.caas.eazytraining.lab node-role.kubernetes.io/worker-
+oc  label node ocp-worker-03.caas.eazytraining.lab node-role.kubernetes.io/worker-
+```
 
 
 ## Troubleshooting
