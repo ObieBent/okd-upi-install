@@ -167,7 +167,8 @@ dnf install -y bind bind-utils dhcp-server httpd haproxy nfs-utils chrony vim jq
 ```
 
 6. Download [config files](https://github.com/ObieBent/okd-upi-install) for each of the services
-```sh 
+```sh
+cd ~
 git clone https://github.com/ObieBent/okd-upi-install.git
 ```
 
@@ -175,7 +176,7 @@ git clone https://github.com/ObieBent/okd-upi-install.git
 
 Apply configuration 
 ```sh
-cp ~/okd-upi-install/dns /etc/named.conf
+cp -f ~/okd-upi-install/dns/named.conf /etc/named.conf
 cp -R ~/okd-upi-install/dns/zones /etc/named
 ```
   
