@@ -118,6 +118,9 @@ wget http://mirror.almalinux.ikoula.com/8.7/isos/x86_64/AlmaLinux-8.7-x86_64-min
 5. Create the Bastion node server and install Alma Linux 8.7
 ```sh 
 qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/hdd/bastion.eazytraining.lab.qcow2 200G
+```
+
+```sh
 virt-install --virt-type kvm --name bastion --ram 4192 --vcpus=4 \
    --disk /var/lib/libvirt/pool/sdd/bastion.eazytraining.lab.qcow2,format=qcow2 \
    --network network=ocpnet \
