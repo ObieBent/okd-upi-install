@@ -125,7 +125,7 @@ virt-install --virt-type kvm --name bastion --ram 4192 --vcpus=4 \
    --disk /var/lib/libvirt/pool/sdd/bastion.eazytraining.lab.qcow2,format=qcow2 \
    --network network=ocpnet \
    --os-type=linux --os-variant=almalinux8 \
-   --location=/var/lib/libvirt/pool/hdd/iso/AlmaLinux-8.7-x86_64-minimal.iso \
+   --location=/var/lib/libvirt/pool/sdd/iso/AlmaLinux-8.7-x86_64-minimal.iso \
    --graphics none \
    --console pty,target_type=serial \
    --extra-args 'console=ttyS0,115200n8 serial'

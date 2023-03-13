@@ -1,7 +1,7 @@
 #!/bin/bash 
 
 # Disk creation
-qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/hdd/ocp-bootstrap.caas.eazytraining.lab.qcow2 40G 
+qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/sdd/ocp-bootstrap.caas.eazytraining.lab.qcow2 40G 
 
 sleep 15
 
