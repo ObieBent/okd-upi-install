@@ -138,8 +138,9 @@ virt-install --virt-type kvm --name bastion --ram 4192 --vcpus=4 \
 2. Download Client and Installer tools  
 ```sh 
 mkdir -p ~/ocp && cd ocp
-curl -O https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-4.10/openshift-install-linux.tar.gz
-curl -O https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-4.10/openshift-client-linux.tar.gz
+curl -O https://github.com/okd-project/okd/releases/download/4.12.0-0.okd-2023-03-05-022504/openshift-client-linux-4.12.0-0.okd-2023-03-05-022504.tar.gz
+curl -O https://github.com/okd-project/okd/releases/download/4.12.0-0.okd-2023-03-05-022504/openshift-install-linux-4.12.0-0.okd-2023-03-05-022504.tar.gz
+
 ```
 
 3. Extract Client and Installer tools and move them to /usr/local/bin
