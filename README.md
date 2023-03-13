@@ -381,12 +381,12 @@ openshift-install create ignition-configs --dir ~/ocp-install/
 
 6. Create a hosting directory to serve the configuration files for the OpenShift booting process
 ```sh
-mkdir -p /var/www/htlm/ocp4
+mkdir -p /var/www/html/ocp4
 ```
 
 7. Copy all generated install files to the new web server directory 
 ```sh 
-cp -R ~/ocp-install/*.ign /var/www/htlm/ocp4/
+cp -R ~/ocp-install/*.ign /var/www/html/ocp4/
 ```
 
 8. Move the Fedora Core OS image to the web server directory
@@ -420,7 +420,7 @@ chmod 744 -R /var/www/html/okd4-image/
 
 # Ignition files
 chcon -R -t httpd_sys_content_t /var/www/html/ocp4/
-chown -R apache: /var/www/html/ocp4/
+chown -R apache: /var/www/htlm/ocp4/
 chmod 744 -R /var/www/html/ocp4/
 ```
 
