@@ -607,7 +607,7 @@ vim ~/ocp/nfs/k8s-csi-nfs/deploy/class.yaml
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: managed-nfs-storage
+  name: nfs-sc
 provisioner: storage.io/nfs # or choose another name, must match deployment's env PROVISIONER_NAME'
 parameters:
   archiveOnDelete: "false"
@@ -654,6 +654,12 @@ cat ~/okd-upi-install/manifests/registry-pv.yaml | envsubst | oc create -f -
 4. After a short wait the 'image-registry-storage' pvc should now be bound
 ```sh
 oc get pvc -n openshift-image-registry
+```
+
+5. Set default storageclass
+
+```sh
+oc patch storageclass nfs-sc -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
 ```
 
 
