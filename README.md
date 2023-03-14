@@ -625,7 +625,7 @@ vim ~/ocp/nfs/k8s-csi-nfs/deploy/class.yaml
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: nfs-sc
+  name: managed-nfs-storage
 provisioner: storage.io/nfs # or choose another name, must match deployment's env PROVISIONER_NAME'
 parameters:
   archiveOnDelete: "false"
@@ -677,7 +677,7 @@ oc get pvc -n openshift-image-registry
 5. Set default storageclass
 
 ```sh
-oc patch storageclass nfs-sc -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
+oc patch storageclass managed-nfs-storage -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
 ```
 
 6. Check clusteroperator status. Wait until Availability become True.
