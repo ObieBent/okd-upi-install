@@ -111,13 +111,13 @@ firewall-cmd --list-all --zone=public
 
 4. Download the Alma Linux 8.7 iso image to the dedicated pool on the host server. <br>
 ```sh
-mkdir -p /var/lib/libvirt/pool/ssd/iso && cd /var/lib/libvirt/pool/sdd/iso
+mkdir -p /var/lib/libvirt/pool/ssd/iso && cd /var/lib/libvirt/pool/ssd/iso
 wget http://mirror.almalinux.ikoula.com/8.7/isos/x86_64/AlmaLinux-8.7-x86_64-minimal.iso
 ```
 
 5. Create the Bastion node server and install Alma Linux 8.7
 ```sh 
-qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/sdd/bastion.eazytraining.lab.qcow2 200G
+qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/ssd/bastion.eazytraining.lab.qcow2 200G
 ```
 
 ```sh
