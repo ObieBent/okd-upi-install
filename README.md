@@ -819,6 +819,7 @@ oc  label node ocp-worker-03.caas.eazytraining.lab node-role.kubernetes.io/worke
 ```sh 
 export CLUSTER_NAME=caas
 export NFS_MONITORING_SIZE=20Gi
+export STORAGE_CLASS=`oc get sc -o jsonpath='{.items[?(@.metadata.annotations.storageclass\.kubernetes\.io/is-default-class=="true")].metadata.name}'`
 cat ~/okd-upi-install/manifests/monitoring-cluster.yaml | envsubst | oc apply -f - 
 ```
 

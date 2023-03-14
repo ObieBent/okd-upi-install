@@ -10,7 +10,7 @@ data:
         cluster_name: ${CLUSTER_NAME}
       volumeClaimTemplate:
         spec:
-          storageClassName: managed-nfs-storage
+          storageClassName: ${STORAGE_CLASS}
           resources:
             requests:
               storage: ${NFS_MONITORING_SIZE}
