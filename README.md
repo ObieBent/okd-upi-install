@@ -890,7 +890,7 @@ Get encryption key for openshift-kube-apiserver:
  echo $(oc get secrets/encryption-config -n openshift-kube-apiserver -o=jsonpath='{.data.encryption-config}') | base64 -d | jq .
 ```
 
-### Activate the `redhat-operators`, `certified-operators` and `redhat-marketplace` catalog source 
+### Activate some catalog source 
 
 ```sh 
 oc edit operatorhub cluster -o yaml
