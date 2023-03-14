@@ -806,22 +806,7 @@ Verify if image registry pods are running on infra nodes
 oc get po -n openshift-image-registry  -owide
 ```
 
-7. Define taints on infra node to prevent the scheduling of application workloads
-
-```sh
-oc adm taint node  ocp-worker-01.caas.eazytraining.lab node-function=infra:NoSchedule
-oc adm taint node  ocp-worker-02.caas.eazytraining.lab node-function=infra:NoSchedule
-oc adm taint node  ocp-worker-03.caas.eazytraining.lab node-function=infra:NoSchedule
-```
-
-Reboot nodes
-```sh 
-ssh core@ocp-worker-01.caas.eazytraining.lab -t 'sudo reboot'
-ssh core@ocp-worker-02.caas.eazytraining.lab -t 'sudo reboot'
-ssh core@ocp-worker-03.caas.eazytraining.lab -t 'sudo reboot'
-```
-
-8. Remove label node-role.kubernetes.io/worker
+7. Remove label node-role.kubernetes.io/worker
 ```sh
 oc  label node ocp-worker-01.caas.eazytraining.lab node-role.kubernetes.io/worker-
 oc  label node ocp-worker-02.caas.eazytraining.lab node-role.kubernetes.io/worker-
