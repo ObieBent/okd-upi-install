@@ -406,7 +406,7 @@ cat <<EOF > /var/www/html/okd4-image/.treeinfo
 arch = x86_64
 family = Fedora CoreOS
 platforms = x86_64
-version = 4.12
+version = 4.10
 [images-x86_64]
 initrd = fcos-37-initramfs.img
 kernel = fcos-37-vmlinuz
