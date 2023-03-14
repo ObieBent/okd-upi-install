@@ -268,8 +268,8 @@ Enable and start the service
 ```sh 
 setsebool -P haproxy_connect_any 1 # SELinux name_bind access
 systemctl enable --now haproxy
-systemctl start httpd 
-systemctl status httpd
+systemctl start haproxy 
+systemctl status haproxy
 ```
 
 11. Configure NFS for the OpenShift registry. It is a requirement to provide storage to the Registry, empyDir can be specified if necessary. 
