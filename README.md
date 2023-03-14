@@ -686,14 +686,10 @@ oc get clusteroperator image-registry
 ```
 
 
-
-
-
-
 ## Access the OpenShift Console
 1. Wait for the 'console' Cluster Operator to become available
 ```sh 
-oc get co
+oc get clusteroperators
 ```
 
 2. Append the following to your local workstations /etc/hosts file:
