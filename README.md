@@ -724,6 +724,13 @@ cat ~/okd-upi-install/manifests/oauth-htpasswd.yaml | envsubst | oc apply -f -
 oc adm policy add-cluster-role-to-user cluster-admin <username>
 ```
 
+3. Wait until the cluster operator `authentication` become available 
+```sh 
+oc get clusteroperator authentication -o json
+```
+
+4. Log in to the Web Console with the username provided in Step 1
+
 
 ### Infra Nodes Configuration 
 1. Adding the label `node-role.kubernetes.io/infra`
