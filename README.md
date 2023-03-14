@@ -890,6 +890,24 @@ Get encryption key for openshift-kube-apiserver:
  echo $(oc get secrets/encryption-config -n openshift-kube-apiserver -o=jsonpath='{.data.encryption-config}') | base64 -d | jq .
 ```
 
+### Activate the `redhat-operators`, `certified-operators` and `redhat-marketplace` catalog source 
+
+```sh 
+oc edit operatorhub cluster -o yaml
+```
+
+```sh 
+spec:
+  disableAllDefaultSources: true
+  sources:
+  - disabled: false
+    name: redhat-operators
+  - disabled: false
+    name: certified-operators
+  - disabled: false
+    name: redhat-marketplace
+```
+
 
 ## Troubleshooting
 1. DHCP troubleshooting 
