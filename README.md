@@ -766,7 +766,7 @@ EOF
 oc apply -f ~/ocp/infra-nodes/mcp.yaml
 ```
 
-4. Check if it is well applied to the nodes specified in step 1 
+4. Check the machine config pool `infra` status
 
 ```sh
 watch -n2 oc get mcp
