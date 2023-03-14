@@ -136,7 +136,7 @@ virt-install --virt-type kvm --name bastion --ram 4192 --vcpus=4 \
 
 1. SSH to the Bastion server
 
-2. Update Alma Linux and install required dependencies 
+2. Update the OS and install required dependencies 
 ```sh 
 dnf update
 dnf install -y bind bind-utils dhcp-server httpd haproxy nfs-utils chrony vim jq wget git
@@ -202,7 +202,7 @@ dig eazytraining.lab @127.0.0.1
 dig -x 192.168.110.9 @127.0.0.1
 ```
 
-Change the nameserver configured in the `/etc/resol.conf` by 127.0.0.1
+Change the nameserver configured in the `/etc/resolv.conf` by 127.0.0.1
 
 8. Configure DHCP
 
@@ -273,7 +273,7 @@ systemctl start haproxy
 systemctl status haproxy
 ```
 
-11. Configure NFS for the OpenShift registry. It is a requirement to provide storage to the Registry, empyDir can be specified if necessary. 
+11. Configure NFS for the OpenShift persistent storage. It is a requirement to provide storage to the Registry, empyDir can be specified if necessary. 
 
 Create the Share 
 
@@ -407,7 +407,7 @@ cat <<EOF > /var/www/html/okd4-image/.treeinfo
 arch = x86_64
 family = Fedora CoreOS
 platforms = x86_64
-version = 4.10
+version = 37
 [images-x86_64]
 initrd = fcos-37-initramfs.img
 kernel = fcos-37-vmlinuz
@@ -504,7 +504,7 @@ openshift-install --dir ~/ocp-install wait-for install-complete --log-level=debu
 
 ## Join Worker Nodes
 
-1. Setup 'oc' and 'kubectl' clients on the ocp-svc machine
+1. Setup 'oc' and 'kubectl' clients on the Bastion machine
 ```sh 
 export KUBECONFIG=~/ocp-install/auth/kubeconfig
 echo 'export OC_EDITOR="vim"' >> ~/.bashrc
@@ -617,7 +617,7 @@ spec:
             path: /mnt/nfs_shares/okd     # Change this (NFS mount path)
 ```
 
-Configure storageclass
+Configure Storage Class
 ```sh
 vim ~/ocp/nfs/k8s-csi-nfs/deploy/class.yaml
 ```
@@ -632,13 +632,13 @@ parameters:
   archiveOnDelete: "false"
 ```
 
-Deploy Deployment and StorageClass
+Deploy Deployment and Storage Class
 ```sh
 oc create -f ~/ocp/nfs/k8s-csi-nfs/deploy/class.yaml 
 oc create -f ~/ocp/nfs/k8s-csi-nfs/deploy/deployment.yaml
 ```
 
-Verify deployment
+Verify Deployment
 ```sh
 oc get pods -n openshift-nfs-storage
 ```
@@ -741,7 +741,7 @@ oc  label node ocp-worker-02.caas.eazytraining.lab node-role.kubernetes.io/infra
 oc  label node ocp-worker-03.caas.eazytraining.lab node-role.kubernetes.io/infra=
 ```
 
-2. Define the machine config pool configuration 
+2. Define the machine config pool configuration dedicated to the Infra Nodes
 ```sh
 mkdir ~/ocp/infra-nodes 
 ```
