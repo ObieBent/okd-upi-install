@@ -354,13 +354,13 @@ ssh-keygen -t rsa -b 4096 -N "" -f /root/.ssh/id_rsa
 mkdir ~/ocp-install
 ```
 
-3. Copy the install-config.yaml included in the clones repository to the install directory
+3. Copy the install-config.yaml included in the cloned repository to the install directory
 ```sh 
 cp ~/okd-upi-install/manifests/install-config.yaml ~/ocp-install/
 ```
 
 4. Update the install-config yaml with your own pull-secret and ssh key.
-  - Line 23 should contain the contents of your pull-secret.txt
+  - Line 23 should contain the contents of your pull-secret.txt obtained from [Red Hat Cluster Manager](https://cloud.redhat.com/openshift/install)
   - Line 24 should contain the contents of your '~/.ssh/id_rsa.pub'
 ```sh
 vim ~/ocp-install/install-config.yaml
