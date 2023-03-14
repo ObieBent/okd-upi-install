@@ -135,14 +135,20 @@ virt-install --virt-type kvm --name bastion --ram 4192 --vcpus=4 \
 
 1. SSH to the Bastion server
 
-2. Download Client and Installer tools  
+2. Update Alma Linux and install required dependencies 
+```sh 
+dnf update
+dnf install -y bind bind-utils dhcp-server httpd haproxy nfs-utils chrony vim jq wget git
+```
+
+3. Download Client and Installer tools  
 ```sh 
 mkdir -p ~/ocp && cd ocp
 wget https://github.com/okd-project/okd/releases/download/4.12.0-0.okd-2023-03-05-022504/openshift-client-linux-4.12.0-0.okd-2023-03-05-022504.tar.gz -O openshift-client-linux.tar.gz
 wget https://github.com/okd-project/okd/releases/download/4.12.0-0.okd-2023-03-05-022504/openshift-install-linux-4.12.0-0.okd-2023-03-05-022504.tar.gz -O openshift-install-linux.tar.gz
 ```
 
-3. Extract Client and Installer tools and move them to /usr/local/bin
+4. Extract Client and Installer tools and move them to /usr/local/bin
 ```sh 
 # Client tools
 tar xvf openshift-client-linux.tar.gz
@@ -153,18 +159,14 @@ tar xvf openshift-install-linux.tar.gz
 mv openshift-install /usr/local/bin
 ```
 
-4. Confirm Client and Installer tools are working 
+5. Confirm Client and Installer tools are working 
 ```sh 
 kubectl version --client --short
 oc version
 openshift-install version
 ```
 
-5. Update Alma Linux and install required dependencies 
-```sh 
-dnf update
-dnf install -y bind bind-utils dhcp-server httpd haproxy nfs-utils chrony vim jq wget git
-```
+
 
 6. Download [config files](https://github.com/ObieBent/okd-upi-install) for each of the services
 ```sh
