@@ -506,6 +506,9 @@ openshift-install --dir ~/ocp-install wait-for install-complete --log-level=debu
 1. Setup 'oc' and 'kubectl' clients on the ocp-svc machine
 ```sh 
 export KUBECONFIG=~/ocp-install/auth/kubeconfig
+echo 'export OC_EDITOR="vim"' >> ~/.bashrc
+echo 'export KUBE_EDITOR="vim"' >> ~/.bashrc
+source ~/.bashrc
 # Test auth by viewing cluster nodes
 oc get nodes
 ```
