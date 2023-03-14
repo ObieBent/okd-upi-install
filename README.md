@@ -252,7 +252,7 @@ curl localhost:8080
 
 Copy HAProxy config 
 ```sh
-cp -f ~/okd-upi-install/haproxy/haproxy.conf /etc/haproxy/haproxy.cfg
+cp -f ~/okd-upi-install/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg
 ```
 
 Configure the firewall 
