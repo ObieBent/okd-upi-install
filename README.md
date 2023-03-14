@@ -869,6 +869,8 @@ spec:
     type: aescbc
 ```
 
+> The encryption will create the update of some cluster operators
+
 Check the encryption process 
 ```sh 
 oc get openshiftapiserver -o=jsonpath='{range .items[0].status.conditions[?(@.type=="Encrypted")]}{.reason}{"\n"}{.message}{"\n"}'
