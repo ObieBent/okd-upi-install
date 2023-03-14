@@ -144,8 +144,8 @@ dnf install -y bind bind-utils dhcp-server httpd haproxy nfs-utils chrony vim jq
 3. Download Client and Installer tools  
 ```sh 
 mkdir -p ~/ocp && cd ocp
-wget https://github.com/okd-project/okd/releases/download/4.12.0-0.okd-2023-03-05-022504/openshift-client-linux-4.12.0-0.okd-2023-03-05-022504.tar.gz -O openshift-client-linux.tar.gz
-wget https://github.com/okd-project/okd/releases/download/4.12.0-0.okd-2023-03-05-022504/openshift-install-linux-4.12.0-0.okd-2023-03-05-022504.tar.gz -O openshift-install-linux.tar.gz
+wget https://github.com/okd-project/okd/releases/download/4.10.0-0.okd-2022-07-09-073606/openshift-client-linux-4.10.0-0.okd-2022-07-09-073606.tar.gz  -O openshift-client-linux.tar.gz
+wget https://github.com/okd-project/okd/releases/download/4.10.0-0.okd-2022-07-09-073606/openshift-install-linux-4.10.0-0.okd-2022-07-09-073606.tar.gz -O openshift-install-linux.tar.gz
 ```
 
 4. Extract Client and Installer tools and move them to /usr/local/bin
