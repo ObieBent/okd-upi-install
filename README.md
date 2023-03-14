@@ -184,7 +184,7 @@ cp -R ~/okd-upi-install/dns/zones /etc/named
   
 Configure the firewall for DNS
 ```sh
-firewall-cmd --add-port=53/tcp --permanent
+firewall-cmd --add-port=53/udp --permanent
 firewall-cmd --reload
 ```
 
