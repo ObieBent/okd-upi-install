@@ -14,6 +14,7 @@ Here is below the exhaustive list:
 - `HTPASSWD_SECRET_NAME`: name of the secret
 - `REGISTRY_PV_NAME`: name of the persistent volume 
 - `NFS_MONITORING_SIZE`: size of the storage used by the monitoring stack [XXGi]
+- `STORAGE_CLASS`: storage class name
 
 
 # OpenShift 4 Install - User Provisioned Infrastructure (UPI)
