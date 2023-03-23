@@ -22,7 +22,7 @@ clearpart --all --initlabel --drives=vda
 
 # Disk partitioning
 part /boot --fstype ext4 --ondisk=vda --size=1024 --asprimary
-part pv.01 --size=204800 --grow
+part pv.01 --size=203776
 volgroup vg_eazy pv.01
 logvol / --fstype ext4 --vgname vg_eazy --size=20480 --grow --name=root
 logvol swap --fstype ext4 --vgname vg_eazy --size=4096 --name=swap
