@@ -30,7 +30,7 @@ logvol /var --fstype ext4 --vgname vg_eazy --size=40960 --name=var
 logvol /tmp --fstype ext4 --vgname vg_eazy --size=1024 --name=tmp
 logvol /var/tmp --fstype ext4 --vgname vg_eazy --size=1024 --name=tempvar
 logvol /home --fstype ext4 --vgname vg_eazy --size=34816 --name=home
-logvol /shares --fstype="ext4" --vgname vg_eazy --size=102400 --name=shares
+logvol /shares --fstype ext4 --vgname vg_eazy --size=102400 --name=shares
 
 # Network configuration
 network --device=enp1s0 --gateway=192.168.110.1 --bootproto=static --ip=192.168.110.99 --nameserver=185.12.64.1,185.12.64.2 --netmask=255.255.255.0 --noipv6 --activate
