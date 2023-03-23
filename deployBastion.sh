@@ -5,7 +5,7 @@ qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/ssd/tes
 
 sleep 15
 
-# Boostrap Installation
+# Bastion Installation
  virt-install \
  --network network:ocpnet \
  --name testing \
