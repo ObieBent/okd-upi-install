@@ -128,6 +128,11 @@ Copy the required Kickstart file to the / directory
 cp ~/okd-upi-install/ks.cfg /
 ```
 
+> To create an encrypted password, you can use python: 
+```sh
+python3 -c 'import crypt,getpass;pw=getpass.getpass();print(crypt.crypt(pw) if (pw==getpass.getpass("Confirm: ")) else exit())'
+```
+
 Install the Bastion server
 ```sh
 sh ~/okd-upi-install/deployBastion.sh
