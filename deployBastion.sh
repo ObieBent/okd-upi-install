@@ -53,7 +53,7 @@ firewall --enabled
 @standard
 @system-tools
 kexec-tools
-epel-release
+almalinux-release
 firewalld
 %end
 
