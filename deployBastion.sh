@@ -10,6 +10,7 @@ sleep 15
  --network network:ocpnet \
  --name testing \
  --os-type=linux \
+ --location=/var/lib/libvirt/pool/ssd/iso/AlmaLinux-8.7-x86_64-minimal.iso \
  --ram=8192 \
  --os-variant=almalinux8 \
  --vcpus=4 \
