@@ -16,5 +16,5 @@ sleep 15
  --vcpus=4 \
  --disk /var/lib/libvirt/pool/ssd/testing.eazytraining.lab.qcow2 --boot hd,menu=on\
  --nographics \
- --initrd-inject /root/okd-upi-installks.cfg \
+ --initrd-inject /root/okd-upi-install/ks.cfg \
  --extra-args "inst.ks=file:/root/okd-upi-install/ks.cfg console=tty0 console=ttyS0,115200n8"
