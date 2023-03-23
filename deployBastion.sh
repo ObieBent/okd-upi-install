@@ -20,7 +20,7 @@ bastion.disk_creation() {
 
 # Bastion Installation
 bastion.installation() {
-    info "Deploying Alma Linux 8.7 on the server"
+    info "Deploying Alma Linux 8.7 on the Bastion server"
     virt-install \
     --network network:ocpnet \
     --name testing \
