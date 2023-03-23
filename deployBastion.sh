@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Disk creation
-qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/ssd/testing.eazytraining.lab.qcow2 200G
+qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/ssd/bastion.eazytraining.lab.qcow2 200G
 
 sleep 15
 
@@ -14,7 +14,7 @@ sleep 15
  --ram=8192 \
  --os-variant=almalinux8 \
  --vcpus=4 \
- --disk /var/lib/libvirt/pool/ssd/testing.eazytraining.lab.qcow2 --boot hd,menu=on\
+ --disk /var/lib/libvirt/pool/ssd/bastion.eazytraining.lab.qcow2 --boot hd,menu=on\
  --nographics \
  --initrd-inject /ks.cfg \
  --extra-args "inst.ks=file:/ks.cfg console=tty0 console=ttyS0,115200n8"

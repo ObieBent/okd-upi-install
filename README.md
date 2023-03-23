@@ -117,19 +117,20 @@ wget http://mirror.almalinux.ikoula.com/8.7/isos/x86_64/AlmaLinux-8.7-x86_64-min
 ```
 
 5. Create the Bastion node server and install Alma Linux 8.7
-```sh 
-qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/ssd/bastion.eazytraining.lab.qcow2 200G
+
+Clone the repository
+```sh
+cd ~ && git clone https://github.com/ObieBent/okd-upi-install.git
 ```
 
+Copy the required Kickstart file to the / directory
 ```sh
-virt-install --virt-type kvm --name bastion --ram 4192 --vcpus=4 \
-   --disk /var/lib/libvirt/pool/ssd/bastion.eazytraining.lab.qcow2,format=qcow2 \
-   --network network=ocpnet \
-   --os-type=linux --os-variant=almalinux8 \
-   --location=/var/lib/libvirt/pool/ssd/iso/AlmaLinux-8.7-x86_64-minimal.iso \
-   --graphics none \
-   --console pty,target_type=serial \
-   --extra-args 'console=ttyS0,115200n8 serial'
+cp ~/okd-upi-install/ks.cfg /
+```
+
+Install the Bastion server
+```sh
+sh ~/okd-upi-install/deployBastion.sh
 ```
 
 ## Configure Environmental Services
