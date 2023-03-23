@@ -12,7 +12,7 @@ info() {
 
 # Disk creation
 bastion.disk_creation() {
-    info "Creating disk"
+    info "Creating Bastion disk"
     qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/ssd/bastion.eazytraining.lab.qcow2 200G
     sleep 15
 }
