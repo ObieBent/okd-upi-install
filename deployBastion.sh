@@ -28,7 +28,7 @@ logvol / --fstype ext4 --vgname vg_eazy --size=20480 --grow --name=root
 logvol swap --fstype ext4 --vgname vg_eazy --size=4096 --name=swap
 logvol /var --fstype ext4 --vgname vg_eazy --size=40960 --name=var
 logvol /tmp --fstype ext4 --vgname vg_eazy --size=1024 --name=tmp
-logvol /var/tmp --fstype ext4 --vgname vg_eazy --size=1024 --name=var_tmp
+logvol /var/tmp --fstype ext4 --vgname vg_eazy --size=1024 --name=tempvar
 logvol /home --fstype ext4 --vgname vg_eazy --size=34816 --name=home
 logvol /shares --fstype="ext4" --vgname=vg_eazy --size=102400 --name=shares
 
