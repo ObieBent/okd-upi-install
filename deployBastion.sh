@@ -30,7 +30,7 @@ bastion.installation() {
     --os-variant=almalinux8 \
     --vcpus=4 \
     --disk /var/lib/libvirt/pool/ssd/bastion.eazytraining.lab.qcow2 --boot hd,menu=on\
-   --nographics \
+    --nographics \
     --initrd-inject /ks.cfg \
     --extra-args "inst.ks=file:/ks.cfg console=tty0 console=ttyS0,115200n8"
 }

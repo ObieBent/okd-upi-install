@@ -12,7 +12,7 @@ info() {
 
 # Disk creation
 bootstrap.disk_creation() {
-   info "Creating disk"
+   info "Creating Bootstrap disk"
    qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/ssd/ocp-bootstrap.caas.eazytraining.lab.qcow2 40G 
    sleep 15
 }
