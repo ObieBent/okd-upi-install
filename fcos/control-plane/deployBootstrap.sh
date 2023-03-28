@@ -11,14 +11,14 @@ info() {
 }
 
 # Disk creation
-bootstrap.disk_creation() {
+bootstrap_disk_creation() {
    info "Creating Bootstrap disk"
    qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/ssd/ocp-bootstrap.caas.eazytraining.lab.qcow2 40G 
    sleep 15
 }
 
 # Boostrap Installation
-bootstrap.installation() {
+bootstrap_installation() {
    info "Deploying Fedora CoreOS on the bootstrap node"
    virt-install \
    --network network:ocpnet \
@@ -37,5 +37,5 @@ bootstrap.installation() {
     ip=192.168.110.110::192.168.110.1:255.255.255.0:ocp-bootstrap.caas.eazytraining.lab:enp1s0:none nameserver=192.168.110.9"
 }
 
-bootstrap.disk_creation
-bootstrap.installation
+bootstrap_disk_creation
+bootstrap_installation

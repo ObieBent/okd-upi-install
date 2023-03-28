@@ -11,7 +11,7 @@ info() {
 }
 
 # Disk creation
-bastion.disk_creation() {
+bastion_disk_creation() {
     info "Creating Bastion disk"
     qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/ssd/bastion.eazytraining.lab.qcow2 200G
     sleep 15
@@ -19,7 +19,7 @@ bastion.disk_creation() {
 
 
 # Bastion Installation
-bastion.installation() {
+bastion_installation() {
     info "Deploying Alma Linux 8.7 on the Bastion server"
     virt-install \
     --network network:ocpnet \
@@ -35,5 +35,5 @@ bastion.installation() {
     --extra-args "inst.ks=file:/ks.cfg console=tty0 console=ttyS0,115200n8"
 }
 
-bastion.disk_creation
-bastion.installation
+bastion_disk_creation
+bastion_installation

@@ -12,14 +12,14 @@ info() {
 
 
 # Disk Creation
-control-03.disk_creation() {
+control-03_disk_creation() {
    info "Creating control-03 disk" 
    qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/ssd/ocp-control-03.caas.eazytraining.lab.qcow2 60G   
    sleep 15
 }
 
 # Control Plane 03 Installation
-control-03.installation() {
+control-03_installation() {
    info "Deploying Fedora CoreOS on the control-03 node"
    virt-install \
    --network network:ocpnet \
@@ -38,5 +38,5 @@ control-03.installation() {
     ip=192.168.110.113::192.168.110.1:255.255.255.0:ocp-control-03.caas.eazytraining.lab:enp1s0:none nameserver=192.168.110.9"
 }
 
-control-03.disk_creation
-control-03.installation
+control-03_disk_creation
+control-03_installation
