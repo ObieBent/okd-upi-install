@@ -7,7 +7,7 @@ _log() {
 }
 
 info() {
-    _log "\nINFO" "$@"
+    _log "\nINFO\n" "$@"
 }
 
 # Disk creation
