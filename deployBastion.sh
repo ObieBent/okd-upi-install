@@ -23,7 +23,7 @@ bastion_installation() {
     info "Deploying Alma Linux 8.7 on the Bastion server"
     virt-install \
     --network network:ocpnet \
-    --name testing \
+    --name bastion \
     --os-type=linux \
     --location /var/lib/libvirt/pool/ssd/iso/AlmaLinux-8.7-x86_64-minimal.iso \
     --ram=8192 \
