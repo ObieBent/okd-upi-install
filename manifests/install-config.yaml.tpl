@@ -20,8 +20,8 @@ networking:
 platform:
   none: {}
 fips: false
-pullSecret: '${PULL_SECRET}' # Add your pull secret
-sshKey: '${SSH_KEY}' # Add your public ssh key
+pullSecret: '${PULL_SECRET}'
+sshKey: '${SSH_KEY}'
 additionalTrustBundle: | 
 ${REGISTRY_CERTIFICATE}
 imageContentSources: 
