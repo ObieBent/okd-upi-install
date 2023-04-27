@@ -23,7 +23,7 @@ fips: false
 pullSecret: '${PULL_SECRET}'
 sshKey: '${SSH_KEY}'
 additionalTrustBundle: | 
-${REGISTRY_CERTIFICATE}
+  ${REGISTRY_CERTIFICATE}
 imageContentSources:
 - mirrors:
   - local-registry.caas.eazytraining.lab:5000/okd
