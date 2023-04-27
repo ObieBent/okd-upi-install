@@ -727,7 +727,7 @@ sh fcos/workers/deployWorker03-fcos.sh
 4th terminal
 ```sh 
 sh fcos/workers/deployWorker04-fcos.sh
-
+```
 
 2. View and approve pending CSRs 
 ```sh
