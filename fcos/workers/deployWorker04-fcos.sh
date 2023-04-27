@@ -11,7 +11,7 @@ info() {
 }
 
 # Disk creation
-worker-04_disk_creation() {
+worker_04_disk_creation() {
    info "Creating worker-04 disk"
    qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/ssd/ocp-worker-04.caas.eazytraining.lab.qcow2 60G
    sleep 15
@@ -19,7 +19,7 @@ worker-04_disk_creation() {
 
 
 # Worker 04 Installation
-worker-04_installation() {
+worker_04_installation() {
    info "Deploying Fedora CoreOS on the worker-04 node"
    virt-install \
    --network network:ocpnet \
@@ -38,5 +38,5 @@ worker-04_installation() {
     ip=192.168.110.117::192.168.110.1:255.255.255.0:ocp-worker-04.caas.eazytraining.lab:enp1s0:none nameserver=192.168.110.9"
 }
 
-worker-04_disk_creation
-worker-04_installation
+worker_04_disk_creation
+worker_04_installation
