@@ -1,5 +1,9 @@
 # okd-upi-install
 
+#### Required tools
+- ansible
+- yq
+
 This repository provides the configurations in order to install OKD through KVM (libvirt).
 
 
@@ -139,6 +143,55 @@ Install the Bastion server
 ```sh
 sh ~/okd-upi-install/deployBastion.sh
 ```
+
+Provide the basic server installation for the Bastion server
+```sh
+mkdir -p ~/ansible/{roles,playbook} && cd ~/ansible/roles
+
+# clone the basic-server ansible role
+git clone https://github.com/ObieBent/basic-server.git
+git clone https://github.com/ObieBent/basic-user.git
+
+
+# install ansible
+dnf install -y ansible
+
+# confirm ansible installation
+ansible --version
+
+# define the ansible.cfg file
+cat <<EOF  | tee ~/ansible/ansible.cfg
+[defaults]
+inventory 		= hosts
+roles_path		= ./roles
+gathering		= smart
+host_key_checking	= False
+
+[diff]
+always = True
+EOF
+
+# define the hosts file
+cat <<EOF | tee ~/ansible/hosts
+[all]
+bastion      ansible_host=192.168.110.9
+gitlab       ansible_host=192.168.110.99
+EOF
+```
+
+Deploy the basic configuration on the Bastion server
+```sh
+cp manifests/basic-server.yaml ~/ansible/playbook
+```
+
+> Modify the playbook `basic-server.yaml`
+  Line 33 should contain the public ssh-key of the user that will have the sudo rights on the server
+
+```sh
+cd ~/ansible
+ansible-playbook playbook/basic-server.yaml -l bastion -u root -k -v 
+```
+
 
 ## Configure Environmental Services
 
