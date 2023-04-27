@@ -11,7 +11,7 @@ info() {
 }
 
 # Disk Creation
-worker_02.disk_creation() {
+worker_02_disk_creation() {
    info "Creating worker-02 disk"
    qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/pool/ssd/ocp-worker-02.caas.eazytraining.lab.qcow2 60G
    sleep 15
