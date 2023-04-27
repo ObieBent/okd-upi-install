@@ -533,7 +533,9 @@ export CLUSTER_NAME=caas
 export PULL_SECRET=`cat /root/mirroring/pull-secret.json`
 export SSH_KEY=`cat /root/.ssh/id_rsa.pub``
 export REGISTRY_CERTIFICATE=`cat shares/registry/certs/caas-eazytraining-lab.crt`
+```
 
+```sh
 cat ~/okd-upi-install/manifests/install-config.yaml.tpl | envsubst > ~/ocp-install/install-config.yaml
 ```
 
