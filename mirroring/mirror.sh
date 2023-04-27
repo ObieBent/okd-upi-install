@@ -5,7 +5,7 @@ OCP_RELEASE='4.10.52'
 LOCAL_REGISTRY='local-registry.caas.eazytraining.lab:5000'
 LOCAL_REPOSITORY='ocp-4-10-52'
 PRODUCT_REPO='openshift-release-dev'
-LOCAL_SECRET_JSON='/data/pull-secret.json'
+LOCAL_SECRET_JSON='/mirroring/pull-secret.json'
 RELEASE_NAME='ocp-release'
 ARCHITECTURE='x86_64'
 
