@@ -185,7 +185,8 @@ cp manifests/basic-server.yaml ~/ansible/playbook
 ```
 
 > Modify the playbook `basic-server.yaml`
-  Line 33 should contain the public ssh-key of the user that will have the sudo rights on the server
+  Line 32 should contain the public ssh-key of the user that will have the sudo rights on the server
+
 
 ```sh
 cd ~/ansible
