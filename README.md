@@ -681,6 +681,8 @@ systemctl reload haproxy
 sh ~/okd-upi-install/cleanup-bootstrap.sh 
 ```
 
+
+
 ## Wait for installation to complete
 1. Collect the OpenShift Console address and kubeadmin credentials from the output to the install-complete event
 ```sh
@@ -700,6 +702,32 @@ source ~/.bashrc
 # Test auth by viewing cluster nodes
 oc get nodes
 ```
+
+###### Open again four terminal
+
+```sh
+cd ~/okd-upi-install
+```
+
+1st terminal
+```sh 
+sh fcos/workers/deployWorker01-fcos.sh
+```
+
+2nd terminal
+```sh 
+sh fcos/workers/deployWorker02-fcos.sh
+```
+
+3rd terminal
+```sh 
+sh fcos/workers/deployWorker03-fcos.sh
+```
+
+4th terminal
+```sh 
+sh fcos/workers/deployWorker04-fcos.sh
+
 
 2. View and approve pending CSRs 
 ```sh
@@ -853,6 +881,7 @@ oc get pvc -n openshift-image-registry
 
 3. Create the persistent volume for the 'image-registry-storage' pvc to bind to
 ```sh
+export REGISTRY_SIZE=100
 export REGISTRY_PV_NAME=registry-pv
 cat ~/okd-upi-install/manifests/registry-pv.yaml | envsubst | oc create -f -
 ```
