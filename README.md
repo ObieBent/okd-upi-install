@@ -353,7 +353,7 @@ cp -a ~/okd-upi-install/mirroring ~/
 > Download your pull secret from Red Hat and place it into the ~/mirroring folder. Don't forget to add the content of the registry authentication file (/run/containers/0/auth.json)
 
 ```sh 
-sh mirror.sh
+sh ~/mirroring/mirror.sh
 ```
 
 
