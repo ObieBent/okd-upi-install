@@ -237,7 +237,118 @@ cd ~
 git clone https://github.com/ObieBent/okd-upi-install.git
 ```
 
-7. Configure BIND DNS
+
+
+7. Setup the mirroring registry for OKD (Air-gapped installation)
+```sh
+mkdir -p /shares/registry/{auth,certs,data}
+```
+
+Install `podman` and `httpd-tools`
+```sh
+dnf -y install podman httpd-tools
+```
+
+Prepare the csr answers
+```sh
+cd /shares/registry
+cat <<EOF | tee /shares/registry/csr-answers
+[req]
+default_bits = 4096
+default_md = sha256
+distinguished_name = req_distinguished_name
+x509_extensions = v3_ca
+prompt = no
+
+[req_distinguished_name]
+C = FR
+ST = Paris
+L = Paris
+O = Eazytraining
+OU = Eazytraining Lab
+CN = local-registry.caas.eazytraining.lab
+
+[v3_ca]
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid:always,issuer:always
+basicConstraints       = CA:true
+keyUsage               = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment, keyAgreement, keyCertSign
+issuerAltName          = issuer:copy
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = local-registry.caas.eazytraining.lab
+DNS.2 = ocp-svc.eazytraining.lab
+EOF
+```
+
+Generate the self-signed certificate for the mirroring registry
+```sh
+openssl req -newkey rsa:4096 -nodes -sha256 -keyout /shares/registry/certs/caas-eazytraining-lab.key -x509 -days 365 -out /shares/registry/certs/caas-eazytraining-lab.crt -config csr-answers
+```
+
+Trust the certificate
+```sh
+cp certs/caas-eazytraining-lab.crt /etc/pki/ca-trust/source/anchors/
+update-ca-trust 
+trust list | grep -i 'local-registry.caas.eazytraining.lab'
+```
+
+Generate credentials for accessing to the registry
+```sh
+htpasswd -bBc /shares/registry/auth/htpasswd evreguser2 esbc_reg2099
+```
+
+Start the registry
+```sh
+podman run --name eazyregistry \
+-p 5000:5000 \
+-v /shares/registry/data:/var/lib/registry:z \
+-v /shares/registry/auth:/auth:z \
+-e "REGISTRY_AUTH=htpasswd" \
+-e "REGISTRY_HTTP_SECRET=fetnmqf981la0eqoof3" \
+-e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
+-e "REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd" \
+-v /shares/registry/certs:/certs:z \
+-e "REGISTRY_HTTP_TLS_CERTIFICATE=/certs/caas-eazytraining-lab.crt" \
+-e "REGISTRY_HTTP_TLS_KEY=/certs/caas-eazytraining-lab.key" \
+-e "REGISTRY_COMPATIBILITY_SCHEMA1_ENABLED=true" \
+-d \
+docker.io/library/registry:latest
+```
+
+Allow some firewall rules
+```sh
+firewall-cmd --add-port=5000/tcp --zone=internal --permanent
+firewall-cmd --add-port=5000/tcp --zone=public --permanent
+firewall-cmd --reload
+```
+
+Verify access to the registry
+```sh
+curl -u evreguser2:esbc_reg2099 https://local-registry.caas.eazytraining.lab:5000/v2/_catalog 
+```
+
+Log in to the registry with podman
+```sh
+podman login -u evreguser2 local-registry.caas.eazytraining.lab:5000
+```
+
+> Your credentials will be Base64 encoded into /run/containers/0/auth.json,  the content of this file should be added to your pull secret file.
+
+Configure the mirroring 
+```sh
+cp -a ~/okd-upi-install/mirroring ~/
+```
+
+> Download your pull secret from Red Hat and place it into the ~/mirroring folder. Don't forget to add the content of the registry authentication file (/run/containers/0/auth.json)
+
+```sh 
+sh mirror.sh
+```
+
+
+8. Configure BIND DNS
 
 Apply configuration 
 ```sh
@@ -266,7 +377,7 @@ dig -x 192.168.110.9 @127.0.0.1
 
 Change the nameserver configured in the `/etc/resolv.conf` by 127.0.0.1
 
-8. Configure DHCP
+9. Configure DHCP
 
 Copy the conf file to the correct location for the DHCP service to use 
 ```sh
@@ -286,7 +397,7 @@ systemctl start dhcpd
 systemctl status dhcpd
 ```
 
-9. Configure the Apache Web Server 
+10. Configure the Apache Web Server 
 
 Change default listen port to 8080 in httpd.conf
 ```sh
@@ -311,7 +422,7 @@ Making a GET request to localhost on port 8080 should now return the default Apa
 curl localhost:8080
 ```
 
-10. Configure HAProxy 
+11. Configure HAProxy 
 
 Copy HAProxy config 
 ```sh
@@ -335,7 +446,7 @@ systemctl start haproxy
 systemctl status haproxy
 ```
 
-11. Configure NFS for the OpenShift persistent storage. It is a requirement to provide storage to the Registry, empyDir can be specified if necessary. 
+12. Configure NFS for the OpenShift persistent storage. It is a requirement to provide storage to the Registry, empyDir can be specified if necessary. 
 
 Create the Share 
 
@@ -368,7 +479,7 @@ systemctl enable --now nfs-server rpcbind
 systemctl start nfs-server rpcbind nfs-mountd
 ```
 
-12. Configure NTP Server 
+13. Configure NTP Server 
 Set the NTP server 
 ```sh 
 vim /etc/chrony.conf
@@ -417,14 +528,18 @@ ssh-keygen -t rsa -b 4096 -N "" -f /root/.ssh/id_rsa
 mkdir ~/ocp-install
 ```
 
-3. Copy the install-config.yaml included in the cloned repository to the install directory
-```sh 
-cp ~/okd-upi-install/manifests/install-config.yaml ~/ocp-install/
+3. Setup the install-config.yaml required for the installation
+```sh
+export CLUSTER_NAME=caas
+export PULL_SECRET=`cat /root/mirroring/pull-secret.json`
+export SSH_KEY=`cat /root/.ssh/id_rsa.pub``
+export REGISTRY_CERTIFICATE=`cat shares/registry/certs/caas-eazytraining-lab.crt`
+
+cat ~/okd-upi-install/manifests/install-config.yaml.tpl | envsubst > ~/ocp-install/install-config.yaml
 ```
 
-4. Update the install-config yaml with your own pull-secret and ssh key.
-  - Line 23 should contain the contents of your pull-secret.txt obtained from [Red Hat Cluster Manager](https://cloud.redhat.com/openshift/install)
-  - Line 24 should contain the contents of your '~/.ssh/id_rsa.pub'
+
+4. Check the install-config yaml if it is populated as expected
 ```sh
 vim ~/ocp-install/install-config.yaml
 ```

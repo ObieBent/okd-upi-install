@@ -24,10 +24,10 @@ pullSecret: '${PULL_SECRET}'
 sshKey: '${SSH_KEY}'
 additionalTrustBundle: | 
 ${REGISTRY_CERTIFICATE}
-imageContentSources: 
+imageContentSources:
 - mirrors:
-  - local-registry.caas.eazytraining.lab:5000/release/ocp-release
-  source: quay.io/openshift-release-dev/ocp-release
+  - local-registry.caas.eazytraining.lab:5000/okd
+  source: quay.io/openshift/okd
 - mirrors:
-  - local-registry.caas.eazytraining.lab:5000/release/ocp-release
-  source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
+  - local-registry.caas.eazytraining.lab:5000/okd
+  source: quay.io/openshift/okd-content
