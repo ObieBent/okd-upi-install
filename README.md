@@ -1132,5 +1132,5 @@ openshift-install gather bootstrap --dir ocp-install --bootstrap=192.168.110.110
 
 
 ## Reference 
-i. https://docs.okd.io/4.12/installing/installing_bare_metal/installing-bare-metal.html <br>
-ii. https://docs.okd.io/4.12/installing/installing-troubleshooting.html
+i. https://docs.okd.io/4.10/installing/installing_bare_metal/installing-bare-metal.html <br>
+ii. https://docs.okd.io/4.10/installing/installing-troubleshooting.html
