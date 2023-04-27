@@ -35,7 +35,7 @@ Here is below the exhaustive list:
 **OKD VMs**
 |          VM             |  CPU | Memory |     OS            |    IP Address         | Disk (GB) |
 |-------------------------|------|--------|-------------------|-----------------------|-----------|
-|     Bastion             |   4  |    4   |  Alma Linux 8.7   |  192.168.110.9        |     420   |
+|     Bastion             |   4  |    4   |  Alma Linux 8.7   |  192.168.110.9        |     450   |
 |     Master-[1-3]        |   6  |    10  |  Fedora CoreOS 37 |  192.168.110.[111-113]|     60    |
 |     Worker-[1-4]        |   8  |    12  |  Fedora CoreOS 37 |  192.168.110.[114-117]|     60    | 
 |     Bootstrap           |   4  |    8   |  Fedora CoreOS 37 |  192.168.110.110      |     40    |
@@ -147,19 +147,27 @@ sh ~/okd-upi-install/deployBastion.sh
 Provide the basic server installation for the Bastion server
 ```sh
 mkdir -p ~/ansible/{roles,playbook} && cd ~/ansible/roles
+```
 
-# clone the basic-server ansible role
+Clone the basic-server ansible role
+```sh
 git clone https://github.com/ObieBent/basic-server.git
 git clone https://github.com/ObieBent/basic-user.git
+```
 
 
-# install ansible
+Install ansible
+```sh
 dnf install -y ansible
+```
 
-# confirm ansible installation
+Confirm ansible installation
+```sh
 ansible --version
+```
 
-# define the ansible.cfg file
+Define the ansible.cfg file
+```sh
 cat <<EOF  | tee ~/ansible/ansible.cfg
 [defaults]
 inventory 		= hosts
@@ -170,8 +178,10 @@ host_key_checking	= False
 [diff]
 always = True
 EOF
+```
 
-# define the hosts file
+Define the hosts file
+```sh
 cat <<EOF | tee ~/ansible/hosts
 [all]
 bastion      ansible_host=192.168.110.9
@@ -179,7 +189,7 @@ gitlab       ansible_host=192.168.110.99
 EOF
 ```
 
-Deploy the basic configuration on the Bastion server
+Deploy the basic configuration to the Bastion server
 ```sh
 cp manifests/basic-server.yaml ~/ansible/playbook
 ```
