@@ -673,7 +673,7 @@ openshift-install --dir ~/ocp-install wait-for bootstrap-complete --log-level=de
 # Two entries
 vim /etc/haproxy/haproxy.cfg
 # Restart HAProxy
-systemctl restart haproxy
+systemctl reload haproxy
 ```
 
 2. The ocp-bootstrap host can now be safely shutdown and deleted.
