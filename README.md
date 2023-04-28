@@ -1,9 +1,5 @@
 # okd-upi-install
 
-#### Required tools
-- ansible
-- yq
-
 This repository provides the configurations in order to install OKD through KVM (libvirt).
 
 
