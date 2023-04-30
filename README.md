@@ -357,7 +357,7 @@ Create the systemd unit file that can be used to control the container registry
 podman generate systemd --new --files --name eazyregistry
 ```
 
-> This command will create a systemd unit file located in the current directory
+> This command will create a systemd unit file located in the current directory. The systemd unit file will ensure that the container is still running even after reboot of the server. 
 
 ```sh
 # container-eazyregistry.service
