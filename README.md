@@ -1103,11 +1103,6 @@ oc apply -f ~/okd-upi-install/manifests/monitoring-user.yaml
 
 
 ### Authentication operator
-Patch the authentication operator
-
-```sh
-oc patch authentications.operator.openshift.io cluster -p='{"spec": {"unsupportedConfigOverrides": {"useUnsupportedUnsafeNonHANonProductionUnstableOAuthServer": true }}}' --type=merge
-```
 
 Removing of the Self-Provisioner 
 ```sh
