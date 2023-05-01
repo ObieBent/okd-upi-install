@@ -999,7 +999,7 @@ oc adm policy add-cluster-role-to-user cluster-admin <username>
 
 3. Wait until the cluster operator `authentication` become available 
 ```sh 
-oc get clusteroperator authentication -o json
+watch -n5 oc get clusteroperators authentication
 ```
 
 4. Log in to the Web Console with the username provided in Step 1
