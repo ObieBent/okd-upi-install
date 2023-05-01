@@ -1009,7 +1009,7 @@ watch -n5 oc get clusteroperators authentication
 oc delete secrets kubeadmin -n kube-system
 ```
 
-> /!\ If you follow this procedure before another user is a cluster-admin, then OpenShift Container Platform must be reinstalled. It is not possible to undo this command.
+> /!\ If you follow this procedure before another user is a cluster-admin, then the cluster must be reinstalled. It is not possible to undo this command.
 
 
 ### Infra Nodes Configuration 
