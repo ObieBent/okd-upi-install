@@ -958,7 +958,7 @@ oc get clusteroperator image-registry
 
 ## Access the OpenShift Console
 1. Wait for the 'console' Cluster Operator to become available
-> There will be a redeployment of the following cluster operators kube-apiserver & openshift-apiserver
+> There will be a redeployment of the following cluster operators: kube-apiserver & openshift-apiserver
 
 ```sh 
 oc get clusteroperators
