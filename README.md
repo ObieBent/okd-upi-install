@@ -251,7 +251,7 @@ mkdir -p /shares/registry/{auth,certs,data}
 
 Install `podman` and `httpd-tools`
 ```sh
-dnf -y install podman httpd-tools
+dnf -y install podman httpd-tools skopeo
 ```
 
 Prepare the csr answers
@@ -958,6 +958,8 @@ oc get clusteroperator image-registry
 
 ## Access the OpenShift Console
 1. Wait for the 'console' Cluster Operator to become available
+> There will a redeployment of the following cluster operators kube-apiserver & openshift-apiserver
+
 ```sh 
 oc get clusteroperators
 ```
