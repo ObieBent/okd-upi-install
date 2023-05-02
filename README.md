@@ -410,6 +410,11 @@ systemctl enable container-eazyregistry.service
 systemctl is-enabled container-eazyregistry.service
 ```
 
+Restart the registry container
+```sh 
+systemctl restart container-eazyregistry.service
+```
+
 8. Configure BIND DNS
 
 Apply configuration 
