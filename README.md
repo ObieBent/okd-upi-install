@@ -1151,22 +1151,50 @@ Get encryption key for openshift-kube-apiserver:
  echo $(oc get secrets/encryption-config -n openshift-kube-apiserver -o=jsonpath='{.data.encryption-config}') | base64 -d | jq .
 ```
 
-### Activate some catalog source 
+### Build the Operators Catalog Source 
+
+Required tool: 
+- [opm](https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.10.0/opm-linux-4.10.0.tar.gz)
 
 ```sh 
-oc edit operatorhub cluster -o yaml
+# download and extract the opm utility
+cd ~/ocp && wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.10.0/opm-linux-4.10.0.tar.gz
+tar -zxf opm-linux-4.10.0.tar.gz
+mv opm /usr/local/bin/
+
+# check if opm is installed
+opm version
 ```
 
+Authenticate with registry.redhat.io 
 ```sh 
-spec:
-  disableAllDefaultSources: true
-  sources:
-  - disabled: false
-    name: redhat-operators
-  - disabled: false
-    name: certified-operators
-  - disabled: false
-    name: redhat-marketplace
+podman login registry.redhat.io --authfile /root/mirroring/pull-secret.json
+```
+
+Authenticate with the target registry
+```sh
+podman login local-registry.caas.eazytraining.lab:5000 --authfile /root/mirroring/pull-secret.json
+```
+
+Prune the source index of all but the specified packages
+```sh
+opm index prune \
+-f registry.redhat.io/redhat/redhat-operator-index:v4.10 \
+-p cluster-logging,openshift-gitops-operator,elasticsearch-operator\
+,devspaces,devworkspace-operator,serverless-operator,servicemeshoperator\
+,openshift-pipelines-operator-rh,vertical-pod-autoscaler,redhat-oadp-operator\
+,kiali-ossm,jaeger-product,cincinnati-operator \
+-t local-registry.caas.eazytraining.lab:5000/olm/redhat-operator-index:v4.10
+```
+
+Push the new index image to the target registry
+```sh
+podman push local-registry.caas.eazytraining.lab:5000/olm/redhat-operator-index:v4.10
+```
+
+Adding the catalog source to the cluster
+```sh 
+oc apply -f ~/okd-upi-install/manifests/catalogSource.yaml
 ```
 
 

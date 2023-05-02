@@ -7,7 +7,7 @@ spec:
   sourceType: grpc
   image: local-registry.caas.eazytraining.lab:5000/olm/redhat-operator-index:v4.10
   displayName: Operator Catalog
-  publisher: Boris ASSOGBA
+  publisher: EazyTraining
   updateStrategy:
     registryPoll: 
       interval: 30m
