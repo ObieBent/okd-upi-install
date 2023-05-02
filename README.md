@@ -999,7 +999,8 @@ cat ~/okd-upi-install/manifests/02-oauth-htpasswd.yaml | envsubst | oc replace -
 
 2. Assign the new user admin permissions
 ```sh
-oc create -f ~/okd-upi-install/manifests/rbac-user-admin.yaml
+export USER=<username>
+cat ~/okd-upi-install/manifests/rbac-user-admin.yaml | envsubst | oc create -f - 
 ```
 
 3. Wait until the cluster operator `authentication` become available 
