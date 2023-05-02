@@ -1197,7 +1197,7 @@ Push the new index image to the target registry
 podman push local-registry.caas.eazytraining.lab:5000/olm/redhat-operator-index:v4.10
 ```
 
-Adding the catalog source to the cluster
+Add the catalog source to the cluster
 ```sh 
 oc apply -f ~/okd-upi-install/manifests/catalogSource.yaml
 ```
