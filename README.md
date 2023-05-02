@@ -1156,6 +1156,11 @@ Get encryption key for openshift-kube-apiserver:
 Required tool: 
 - [opm](https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.10.0/opm-linux-4.10.0.tar.gz)
 
+Disable the default OperatorHub sources
+```sh
+oc patch OperatorHub cluster --type json -p '[{"op": "add", "path": "/spec/disableAllDefaultSources", "value": true}]'
+```
+
 ```sh 
 # download and extract the opm utility
 cd ~/ocp && wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.10.0/opm-linux-4.10.0.tar.gz
