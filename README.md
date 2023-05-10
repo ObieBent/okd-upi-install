@@ -154,6 +154,7 @@ git clone https://github.com/ObieBent/basic-user.git
 
 Install ansible
 ```sh
+dnf install -y epel-release
 dnf install -y ansible
 ```
 
