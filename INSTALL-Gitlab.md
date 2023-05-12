@@ -38,5 +38,5 @@ systemctl reload firewalld
 
 ## Initial setup of Gitlab
 
-It may need to get the initial password of root user account in the following file `/opt/gitlab/initial_root_password`.
+It may need to get the initial password of root user account in the following file `/etc/gitlab/initial_root_password`.
 Then, log in to the Gitlab instance **http://gitlab.eazytraining.lab** 
