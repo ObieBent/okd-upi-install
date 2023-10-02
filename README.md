@@ -598,9 +598,9 @@ mkdir ~/ocp-install
 3. Setup the install-config.yaml required for the installation
 ```sh
 export CLUSTER_NAME=caas
-export PULL_SECRET=`cat /root/mirroring/pull-secret.json`
-export SSH_KEY=`cat /root/.ssh/id_rsa.pub`
-export REGISTRY_CERTIFICATE=`cat /shares/registry/certs/caas-eazytraining-lab.crt`
+export PULL_SECRET=$(cat /root/mirroring/pull-secret.json)
+export SSH_KEY=$(cat /root/.ssh/id_rsa.pub)
+export REGISTRY_CERTIFICATE=$(awk '{printf("  %s\n", $0)}' /etc/pki/ca-trust/source/anchors/*.crt)
 ```
 
 ```sh
