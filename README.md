@@ -188,7 +188,7 @@ EOF
 
 Deploy the basic configuration to the Bastion server
 ```sh
-cp manifests/basic-server.yaml ~/ansible/playbook
+cp ~/okd-upi-install/manifests/basic-server.yaml ~/ansible/playbook
 ```
 
 > Modify the playbook `basic-server.yaml`. Line 32 should contain the public ssh-key of the user that will have the sudo rights on the server
@@ -873,7 +873,7 @@ spec:
       serviceAccountName: nfs-client-provisioner
       containers:
         - name: nfs-client-provisioner
-          image: quay.io/external_storage/nfs-client-provisioner:latest
+          image: gcr.io/k8s-staging-sig-storage/nfs-subdir-external-provisioner:v4.0.2
           volumeMounts:
             - name: nfs-client-root
               mountPath: /persistentvolumes
